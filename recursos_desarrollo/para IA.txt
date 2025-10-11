@@ -1,0 +1,643 @@
+SISTEMA DE GESTIÓN DE LA CUENCA OVINO CAPRINA
+
+
+1.	INTRODUCCIÓN Y CASOS DE USO
+INTRODUCCIÓN OBJETIVOS
+ALCANCE Y BENEFICIOS FUNCIONES DEL SISTEMA ACTORES Y ROLES CASOS DE USO
+
+2.	FUNCIONALIDADES Y DESCRIPCIÓN
+ÁMBITOS DE USO PROCESOS
+DETALLE DE LOS PROCESOS
+
+
+3.	ESTRUCTURA DE LA BASE DE DATOS REVISIÓN DE INFORMES DE SALIDA RESUMEN DE ENTIDADES
+RELACIONES ENTRE TABLAS VALIDACIÓN CON INFORMES MODELO ENTIDAD-RELACIÓN (ER)
+GESTIÓN DE USUARIOS E INSTITUCIONES GESTION DE PRODUCTORES Y CAMPOS INFORMACIÓN GANADERA
+ 
+1.	INTRODUCCIÓN Y CASOS DE USO
+
+Introducción:
+La Cuenca Ovino‑Caprina Zona Sur de Misiones es un territorio caracterizado por una
+larga tradición ganadera y una diversidad ambiental que abarca pastizales nativos, bosques de galería y cursos de agua de alta calidad. Su principal desafío es balancear la producción primaria —principalmente ovina y caprina— con la conservación del suelo, la gestión eficiente del recurso hídrico y la biodiversidad. En este marco, la Mesa de Gestión de la Cuenca Ovino‑Caprina, integrada por organismos gubernamentales (Ministerio de Agricultura, INTA, Universidades), instituciones financieras y cooperativas, y actores locales (productores y consultoras ambientales como Consultores del Guayrá SRL), impulsa un programa de desarrollo territorial multidisciplinario.
+
+Objetivo del Sistema de Gestión:
+Desarrollar una plataforma web y móvil que permita: A los productores, actualizar en tiempo real sus datos de stock ganadero, parcelas y recursos hídricos, así como asociar información geoespacial (coordenadas, uso de suelo) y registrar prácticas de manejo (rotación de pasturas, sanidad animal).
+A los técnicos y consultores ambientales, acceder de forma centralizada y amigable a los datos productivos y ambientales, generar reportes periódicos, visualizar tendencias de recuperación de suelos y recomendar acciones específicas (reforestación, manejo de corrales, reserva de agua de lluvia).
+A la administración de la Mesa, supervisar el cumplimiento de objetivos de manejo
+sostenible, coordinar asistencia técnica y facilitar la toma de decisiones estratégicas a nivel regional.
+
+Alcance y Beneficios:
+Monitoreo integrado de variables productivas y ambientales, desde la cuenta de cabezas de ganado hasta indicadores de erosión y calidad de agua.
+Georreferenciación de campos: cada parcela o “chacra” de un productor queda asociada a coordenadas GPS, permitiendo análisis espaciales y la generación de mapas de uso del suelo.
+ 
+Funciones del sistema:
+El sistema debe estar diseñado contemplando las siguientes funcionalidades:
+-Gestión de usuarios(registros, logins, roles, permisos según roles, creación, verificación, autorización y eliminación lógica de cuentas)
+-Permitir a los productores mantener un registro constante de su stock, registrar las novedades y tener acceso a su historial de cambios
+-Permitir que ciertos actores accedan a la información en conjunto de los productores
+-Suministrar informes y estadísticas automatizadas.
+-Suministrar un mapa interactivo de la región georeferenciando a las chacras y su producción.
+
+Actores y roles:
+A continuación se describen los distintos actores involucrados, las funciones o roles que se les asignará en el sistema y el flujo de datos correspondiente para cada uno.
+
+Administrador global o superadmin: Posee control general del sistema, sus principales funciones constan de definir configuraciones globales, gestionar permisos y credenciales, consulta de metadatos para auditorias, visualización de todos los módulos del sistema. No puede editar registros o catálogos de otros usuarios.
+
+Productores: Usuario responsable de reportar su inventario ganadero y datos básicos de su chacra, además puede visualizar su historial de datos y consultar su stock en todo momento. Un productor debe ser miembro de la organización (cuenca ovino-caprina) para obtener una cuenta. Las cuentas de productor están gestionadas directamente por el administrador global.
+
+Administrador institucional: Administrador único por institución* verificada, su rol principal es verificar y dar acceso o rechazar a miembros de la misma institución al sistema, tiene la responsabilidad de asegurar el buen uso y evitar que actores ajenos al proyecto accedan a la información. Su actividad debe poder ser auditada por el administrador global.
+Participante institucional: miembro verificado de una institución que puede acceder a la información suministrada por los productores, accede a informes y estadísticas solo con fines de investigación o de asesoramiento. Su acceso es controlado por el administrador de la institución a quien pertenece, pero sus credenciales y proceso de verificación será visible para el administrador global como medida de seguridad.
+ 
+*Institución: Etiqueta que agrupa usuarios y actúa como filtro necesario para SOLO permitir que miembros de una institución aprobada por la organización acceda a la información
+
+Comportamiento del sistema: Casos de uso
+A.	Registros/login
+1.	Nombre: Registrar Productor (por lotes)
+Descripción: Permite importar un archivo de productores al sistema y generar automáticamente cuentas individuales asociadas a cada uno
+Precondiciones:
+1.	Debe existir la cuenta de superadmin con todos los permisos activados
+2.	La lista debe estar cuidadosamente revisada y correctamente sanitizada
+Flujo Normal:
+1.	El administrador global accede a su pestaña CRUD
+2.	Elige la opción de "importar archivo"
+3.	Se verifica que existan todos los campos necesarios para crear los registros en la base de datos
+4.	Se solicita contraseña al administrador por seguridad
+5.	Se guarda la información informando con un mensaje de éxito
+6.	El sistema crea cuentas con contraseñas temporales y estados "inactivos" hasta que los productores ingresen al sistema desde web o app
+Flujo Alternativo:
+3.1	Algún campo falla o la lista no fue correctamente sanitizada
+3.1.1	Se informa detalladamente el error para que pueda ser corregido
+4.1	La contraseña no es correcta
+4.1.1	Se informa con mensaje de error, se invita a proceder a recuperar la contraseña
+
+
+2.	Nombre: Registrar Productor (individual, nuevo usuario)
+Descripción: Permite cargar un productor a la base de datos y asociarlo con una cuenta única
+Precondiciones:
+1.	Debe existir la cuenta de superadmin con todos los permisos activados
+2.	El productor ya debe estar asociado al proyecto cuenca ovino-caprina.
+Flujo Normal:
+1.	Superadmin verifica datos y elige “Registrar Productor”.
+2.	El super administrador verifica que el productor pertenezca al proyecto.
+ 
+3.	Introduce datos básicos de identificación y de contacto.
+4.	El sistema verifica si los datos son correctos y no sea un registro repetido
+5.	Se guardan los datos
+6.	Sistema crea registro con estado = inactivo y genera contraseña temporal.
+7.	Sistema guarda la contraseña hasta el momento de que el productor intenta el primer login
+8.	Finaliza caso de uso
+Flujo Alternativo:
+2.1.	El productor no pertenece al proyecto
+2.1.1.	Se pospone el registro hasta que el productor sea miembro (procesos externos), volver al paso 1.
+4.1.	El productor ya está registrado o falta/falla de algún dato
+4.1.1.	Se indica el error
+4.1.2.	Volver al paso 2.
+
+3.	Nombre: Registrar Institución
+Descripción: Permite validar una institución y vincularla al sistema Precondiciones: La institución debe haber llenado un formulario de registro Flujo Normal:
+1.	El administrador global verifica los datos del formulario
+2.	Acepta la petición y guarda los datos
+3.	Finaliza caso de uso
+Flujo Alternativo:
+2.1.	El administrador global rechaza la solicitud
+2.1.1	El administrador global debe informar por que se ha rechazado la solicitud.
+2.1.2	El mensaje informativo es guardado en un log.
+
+
+4.	Nombre: Registrar administrador institucional
+Descripción: El administrador global designa una cuenta con permisos de agregar/y/o/gestionar participantes por institución, a continuación se detallan los permisos otorgados:
+a)	Acceso al módulo Solicitudes
+b)	Acceso al módulo Reportes
+c)	Acceso al módulo Gestión de Cuentas
+Precondiciones: La institución debe estar aprobada
+Flujo Normal:
+ 
+1.	El administrador global habilita una cuenta de administrador para la institución.
+2.	Se crea un usuario y contraseña que se suministre al encargado/a de administrar la institución.
+3.	El administrador institucional debe aceptar los términos de uso y auditoría.
+4.	El administrador institucional ya está listo para loguearse.
+Flujo Alternativo:
+3.1	El administrador institucional no acepta los términos
+3.1.1	El administrador global revoca las credenciales a la institución
+
+5.	Nombre: Registrar participantes institucionales
+Descripción: Un administrador de una institución vinculada al sistema permite/valida una cuenta para un miembro de su institución.
+Precondiciones: El administrador institucional debe estar verificado y logueado
+Flujo Normal:
+1.	Un miembro de una institución intenta registrarse
+2.	Busca en sistema a la institución que pertenece
+3.	Completa un formulario y envía sus datos con una solicitud de verificación
+4.	El administrador institucional verifica los datos y acepta la solicitud
+5.	Se permite al participante loguearse
+Flujo Alternativo:
+2.1.	No encuentra la institución
+2.1.1	Se debe intentar el caso de uso 2 "Registrar institución"
+4.1. El administrador institucional rechaza la solicitud
+
+
+B.	Usos productor
+1.	Nombre: Login Productor
+Descripción: El productor intenta entrar a la aplicación/web, se tienen en cuenta estos detalles:
+a)	Por defecto los productores registrados en el sistema tienen una cuenta con el estado inactivo
+b)	Generación de contraseña: el sistema crea una contraseña temporal.
+c)	Entrega de credenciales: esas credenciales se muestran (o envían por mail/SMS) al productor.
+d)	Activación: al primer login exitoso con la contraseña temporal, el sistema cambia su estado a "activo" y solicita que defina su propia contraseña permanente.
+ 
+Precondiciones: El productor debe formar parte de la organización y el administrador lo ha añadido a la base de datos
+Flujo Normal:
+1.	El productor descarga la aplicación o entra a la página principal de la web
+2.	El productor introduce datos generales (dni, email, nombre, etc)
+3.	El sistema comprueba si los datos pertenecen a un usuario valido del sistema,	es	decir que sus datos básicos ya deben estar precargados por un administrador
+4.	Se le asigna una contraseña temporal para iniciar sesión
+5.	Se cambia el estado del productor a "Activo" en la base de datos y puede loguearse
+Flujo Alternativo:
+3.1	El sistema no reconoce al usuario
+3.1.1	los datos del formulario son guardados en forma de solicitud pendiente
+3.1.2	Se le comunica al administrador global de la petición
+3.1.3	Se le informa al productor que no está afiliado a la organización
+
+2.	Nombre: Carga de datos productor
+Descripcion: Una vez logueado el productor debe llenar formularios con algunos datos necesarios para relevamiento
+Precondiciones: El productor debe estar logueado
+Flujo Normal:
+1.	El productor accede a su página personal
+2.	Se le muestran formularios que debe llenar con algunos datos esenciales para poder explorar libremente su página
+3.	El productor completa los datos y los envía
+4.	Se libera la página para el uso libre del productor
+Flujo Alternativo:
+3.1	El productor no completa los datos
+3.1.1	Se muestra un mensaje que informa que la información es obligatoria además no se deja minimizar ni dejar en segundo plano al formulario
+
+3.	Nombre: Cambiar configuración de productor
+Descripcion: El productor puede cambiar algunos datos relacionados a su cuenta como contraseña o actualizar correo electrónico
+Precondiciones: El productor debe estar logueado y haber completado el formulario básico
+ 
+Flujo Normal:
+1.	El productor a la pestaña de configuraciones
+2.	Elige algunos de los campos a cambiar
+3.	Cambia de contraseña utilizando la contraseña anterior
+4.	Cambia de nombre de usuario (local)
+5.	Cambia correo electrónico
+
+Flujo Alternativo:
+
+3.1	No sabe la contraseña anterior
+3.1.1	Se activa el proceso de restablecimiento de contraseña vía email o celular
+3.1.1.1	No recuerda o no puede utilizar estos metodos
+3.1.1.2	Debe ocntactarse con el administradot
+3.1.1.3	El administrador verifica la peticion y otorga la contraseña al productor
+5.1	Ha cambiado su email dentro de los últimos N días
+5.1.1	Se emite un mensaje informando el problema
+
+4.	Nombre: Actualización de stock
+Descripcion: El productor actualiza sus stock ganadero mediante formularios Precondiciones: Debe estar logueado y haber completado información básica Flujo Normal:
+1.	El productor ingresa a la pestaña de stock
+2.	Ingresa a la opción "Actualizar" o "Nuevo registro"
+3.	Completa los formularios relacionados a cada especie y tipo correspondientes
+4.	Se verifica que los datos sean consistentes (la suma de los tipos sea igual al total, o que los números no sean negativos)
+5.	Se guarda y envía el registro
+Flujo Alternativo:
+4.1	Inconsistencia de datos
+4.1.1	Se informa el error y se pide al productor verificar los campos que rellenó
+4.1.2	Se guardan los campos llenados como borrador hasta que sean corregidos (también debe existir la opción de limpiar completamente el formulario)
+4.1.3	Si los datos ahora son correctos se envía el informe sino se espera a corregir el error
+ 
+5.	Nombre: Visualización de historial de registros
+Descripcion: El productor puede visualizar sus registros anteriores para comparar con los más recientes, además si desea puede visualizar en forma de gráficos el desarrollo del historial.
+Precondiciones: Debe tener al menos un registro cargado
+Flujo Normal:
+1.	El productor entra en la pestaña "historial" dentro de la pestaña "stock"
+2.	Filtra por (Algunos filtros pueden complementarse, ver logica): Animales:
+a)	Especie
+b)	Tipo
+c)	Raza Fecha:
+a)	Una fecha particular
+b)	Lapso entre dos fechas
+c)	Lapso entre una fecha y el último registro
+*Ver historial completo
+Flujo Alternativo:
+2.1	El productor ingresa una fecha incorrecta o ilógica
+2.1.1	Se informa el error
+
+C.	Usos Administrador institucional
+1.	Nombre: Revisar solicitudes pendientes
+Descripción: El administrador de una institución ingresa a una pestaña adicional de su cuenta que permite ver, validar o rechazar solicitudes de miembros de su institución para entrar al sistema
+Precondiciones: Debe haberse registrado y logueado
+Flujo Normal:
+1.	El administrador institucional revisa la bandeja de entrada o pestaña de notificaciones
+2.	Visualiza las solicitudes pendientes
+3.	Acepta o rechaza estas solicitudes
+Flujo Alternativo:
+3.1	Si rechaza deberá incluir un mensaje con la razón por el cual se rechazó la petición que servirá para que el superadmin audite
+
+2.	Nombre: Gestionar Participantes
+ 
+Descripcion: El administrador institucional tiene la facultad de visualizar y desactivar cuentas de participantes de sus institución
+Precondiciones: Debe haberse registrado y logueado
+Flujo Normal:
+1.	Ingresa a su pestaña personal de gestión de usuarios
+2.	Visualiza una tabla con los participantes asociados
+Flujo Alternativo:
+2.1	Desactiva una cuenta
+2.1.1	Debe incluir un mensaje informativo de por que se ha desactivado esta cuenta con fines de auditoría.
+2.1.2	Se confirma la eliminación
+
+3.	Nombre: Desvincular institución
+Descripción: Desea desvincular la institución del proyecto
+Precondiciones: Debe estar registrado y logueado
+Flujo Normal:
+1.	Selecciona la opcion en configuraciones "Desvincular cuenta"
+2.	Carga un mensaje informando las razones de la desvinculación
+3.	Su usuario y contraseña son eliminados (lógicamente, por si desea volver a ingresar)
+
+D.	Usos Participante Institucional
+1.	Nombre: Login Participante Institucional
+Descripción: Permite al participante institucional autenticarse en la aplicación/web con su cuenta verificada.
+Precondiciones:
+1.	Existe cuenta de participante institucional con estado = “activo”.
+2.	El participante ya recibió sus credenciales definitivas tras la aprobación.
+Flujo Normal:
+1.	El participante abre la web o app.
+2.	Introduce su usuario (email o DNI) y contraseña.
+3.	El sistema valida credenciales y estado = “activo”.
+4.	Se crea sesión y se muestra el panel principal de participante institucional.
+Flujo Alternativo:
+3.1	Credenciales incorrectas o cuenta inactiva
+ 
+3.1.1	Se informa “Usuario o contraseña inválidos” o “Cuenta inactiva, contacte al admin institucional”.
+
+2.	Nombre: Consultar informes y estadísticas
+Descripción: Permite al participante institucional acceder a reportes agregados de stock y tendencias de su institución.
+Precondiciones:
+1.	El participante debe haber iniciado sesión exitosamente.
+2.	La institución debe tener al menos un productor con datos cargados.
+Flujo Normal:
+1.	Desde el panel, el participante selecciona “Informes y estadísticas”.
+2.	Elige período (e.g., último mes, trimestre, año).
+3.	El sistema genera tablas y gráficos con:
+a)	Total de cabezas por especie y tipo.
+b)	Variaciones porcentuales respecto al período anterior.
+c)	Tendencias de crecimiento o decrecimiento.
+
+4.	El participante puede descargar el informe en PDF o CSV.
+Flujo Alternativo:
+2.1	No hay datos en el rango seleccionado
+2.1.1	Se muestra mensaje “No hay datos para el período seleccionado” y opción de elegir otro
+rango.
+
+3.	Nombre: Visualizar mapa interactivo
+Descripción: Permite al participante institucional ver en un mapa georreferenciado las chacras de los productores y superponer capas de datos (stock, uso de suelo, prácticas de manejo).
+Precondiciones:
+1.	El participante debe haber iniciado sesión exitosamente.
+2.	Cada chacra debe tener coordenadas GPS válidas.
+Flujo Normal:
+1.	Desde el panel, el participante selecciona “Mapa interactivo”.
+2.	El sistema carga el mapa centrado en la región de la cuenca.
+3.	Se muestran marcadores por chacra; al hacer clic:
+a)	Aparecen datos resumidos (propietario, número de cabezas, uso de suelo).
+ 
+b)	Opciones para filtrar capas: especies, prácticas de manejo, calidad de agua.
+4.	El participante ajusta filtros y el mapa actualiza visibilidad de capas en tiempo real.
+Flujo Alternativo:
+3.1	Alguna chacra sin coordenadas válidas
+3.1.1	Se omite ese marcador y se muestra lista de chacras sin geolocalizar, con opción de visualizarlas en tabla.
+
+
+
+
+2.	FUNCIONALIDADES Y DESCRIPCIÓN
+
+Ámbitos de uso:
+El sistema está destinado a ser utilizado por:
+SuperAdmin: Para control global del sistema.
+Administradores institucionales: Gestión de usuarios de cada institución.
+Participante institucional: Usuario con acceso a informes y visualización de datos.
+Productor: Dueño de la chacra, encargado de subir y actualizar periódicamente sus datos personales y de su parcela.
+
+Procesos:
+Tablas
+Altas, Bajas y Modificaciones de las siguientes entidades:
+-	Productores
+-	Instituciones
+-	Técnicos(o participantes) institucionales
+-	Campos vinculados a los productores
+-	Condiciones de tenencia de tierra
+-	Tipos de suelo, pasto y acceso a recursos (agua, tecnología)
+
+
+Procesos
+El sistema contará con procesos que automatizan y registran actividades claves:
+-	Registro y actualización periódica de stock animal por especie, raza y categoría (nacimientos, muertes, ventas)
+ 
+-	Importación masiva e individual de productores
+-	Validación y registro de instituciones y técnicos (o participantes)
+-	Gestión de permisos y asignación de roles (SuperAdmin, Admin. Institucional, Participante, Productor)
+-	Configuración y ejecución de actualizaciones ganaderas programadas
+
+Informes
+-	Reportes de stock animal por especie, raza y categoría
+-	Registros de nacimientos, muertes y ventas de animales por especie
+-	Informes históricos por ciclos de actualización ganadera
+-	Seguimiento de productores con actividad reciente o inactivos
+
+Estadísticas
+El sistema permitirá generar estadísticas útiles para diagnóstico y planificación:
+-	Tipos de pasto utilizados en los campos
+-	Distribución de tipos de suelo
+-	Acceso a fuentes de agua (pozos, acuíferos o externas)
+-	Tecnología disponible en los campos
+-	Acceso a recursos eléctricos
+-Gráficos de evolución de cabezas de ganado por especie y tipo
+
+
+Mapa interactivo
+-	Georreferenciación de chacras con coordenadas GPS
+-	Capas de datos: stock, uso de suelo, prácticas de manejo, calidad de agua
+-	Filtros dinámicos por especie, práctica, institución
+-	Pop-ups con datos resumidos al hacer clic en cada marcador
+
+
+Administración
+-	Gestión de usuarios (alta, baja, modificación, roles y permisos)
+-	Control de autenticación, generación de contraseñas temporales y restablecimiento
+-	Auditoría de accesos y acciones (logs de sistema)
+
+
+Auditoría
+Se contemplan herramientas administrativas y de control:
+-	Carga y validación de instituciones
+ 
+-	Verificación de usuarios y técnicos(o participantes)
+-	Control de actualizaciones ganaderas realizadas y programadas
+-	Registros históricos de actividades
+-	Alertas de inconsistencias y accesos no autorizados
+-	Historial de cambios en catálogos y datos de stock
+
+
+
+Una vez implementado, el sistema permitirá:
+-	Centralizar la información de los productores y sus campos
+-	Monitorear el stock ganadero en tiempo real y por períodos
+-	Facilitar el trabajo de técnicos e instituciones en territorio
+-	Producir estadísticas útiles para decisiones sanitarias y productivas
+-	Mejorar la trazabilidad y eficiencia de los recursos utilizados
+
+
+
+Detalle de los procesos
+
+Informes de stock animal
+1.	Plantilla de stock general
+Datos requeridos: Fecha, Productor (ID y nombre), Especie, Raza, Categoría, Cantidad actual de cabezas.
+Función: Generar un listado por día o rango de fechas del stock total registrado en el sistema.
+Exportable: PDF, CSV
+Filtros: Productor, especie, raza, período
+2.	Planilla de Novedades Ganaderas
+Datos requeridos: Fecha, Productor, Especie, Evento (Nacimiento, Muerte, Venta), Cantidad.
+Función: Listado de todos los movimientos que afectan el stock, para auditoría y seguimiento histórico.
+Complemento: Cruce con el historial de actualizaciones programadas y datos del productor.
+
+
+3.	Planilla de Productores Activos/Inactivos
+Datos requeridos: Productor, Última fecha de actualización, Estado (Activo/Inactivo).
+Función: Identificar productores que no han registrado novedades en el período seleccionado.
+ 
+Filtros: Rango de fechas, Institución.
+
+Estadísticas
+1.	Cabezas de Ganado por Especie y Categoría
+Agrupamiento: Por especie (ovina, caprina) y categoría (adultos, crías).
+Visualización: Gráfico de barras y tabla de datos.
+2.	Variación de Stock por Período
+Datos: Diferencia porcentual de cabezas entre dos fechas.
+Función: Medir crecimiento o decrecimiento en cada especie/raza.
+3.	Distribución de Tipos de Suelo y Pasto
+Datos: Tipo de suelo, tipo de pasto, hectáreas.
+Visualización: Gráficos (barra, torta) y tabla comparativa.
+4.	Acceso a Recursos (Agua y Tecnología)
+Datos: Productor, campo, fuente de agua (pozo, río), lista de dispositivos tecnológicos.
+Función: Analizar cobertura de infraestructura y necesidades de inversión.
+
+Procesos claves
+1.	Importación Masiva de Productores
+Datos: Archivo CSV con campos obligatorios (DNI, nombre, institución, coordenadas).
+Función: Crear cuentas temporales para cada productor y notificar al administrador global.
+2.	Ejecución de Actualizaciones Ganaderas Programadas
+Datos: Configuración de periodicidad (mensual, trimestral), parámetros por especie.
+Función: Generar recordatorios automáticos y formularios de carga para productores.
+3.	Gestión de Permisos y Roles
+Datos: Usuario, rol asignado (SuperAdmin, Admin. Institucional, Participante, Productor), módulos habilitados.
+Función: Controlar acceso a formularios, informes y flujos de aprobación.
+
+
+Informes de auditoría
+1.	Historial de Cambios en Catálogos y Stock
+Resumen: Registro de altas/bajas/modificaciones en tablas de catálogo y en registros de stock.
+Estados: Nuevo, Modificado, Eliminado.
+2.	Log de Accesos y Sesiones
+Datos: Usuario, fecha y hora de login/logout, IP de acceso.
+ 
+Función: Detectar accesos no autorizados o patrones anómalos de uso.
+3.	Alertas de Inconsistencias
+Funciones: Señalización automática de datos fuera de rango (e.g., stock negativo) y solicitud de revisión por el productor o administrador.
+
+
+
+3.	ESTRUCTURA DE LA BASE DATOS
+
+Revisión de informes de salida
+
+Reporte de stock de animales: lista las existencias actuales de animales por productor, especie, raza y categoría (e.g. ovinos, caprinos).
+Informe de nacimientos/muertes/ventas: registra, por productor y especie, el número de nacimientos, muertes o ventas de animales en un periodo.
+Informe histórico de actualizaciones: muestra por ciclo de actualización ganadera cuántos registros de stock se recibieron (desde la tabla de histórico de actualizaciones).
+Seguimiento de productores: identifica qué productores tienen actividad reciente o están inactivos (por ejemplo, fecha de última actualización de stock).
+Estadísticas de campos: incluye la distribución de tipos de pasto, tipos de suelo, acceso a fuentes de agua y tecnologías, uso de electricidad, etc., en los campos registrados.
+Gráficos de evolución de ganado: resumen visual de la evolución de cabezas de ganado por especie y categoría a lo largo del tiempo.
+Mapa interactivo: visualización geográfica de los campos y su información (punto de carga de datos)
+ 
+A continuación se presenta una tabla de informes de salida con los campos clave que cada informe requeriría:
+
+Informe de salida	Campos requeridos (columnas principales)	
+	Stock animal por especie/raza/ categoría	Identificador de productor, nombre de productor, especie, raza, categoría, cantidad, fecha de registro.	
+	Nacimientos/Muertes/Ventas de animales	Identificador de productor, especie, categoría/raza, fecha, tipo de evento (nacimiento/muerte/venta), cantidad.	
+	Histórico de actualizaciones ganaderas	Ciclo de actualización (ID), fecha inicio, fecha fin, registros recibidos.	
+	Seguimiento de productores (activos/inactivos)	Identificador de productor, nombre, última fecha de actualización de stock (máxima fecha de registro).	
+	Tipos de pasto en campos	Nombre de tipo de pasto, conteo de campos con ese pasto predominante.	
+	Distribución de tipos de suelo	Nombre de tipo de suelo, conteo de campos con ese suelo predominante.	
+	Acceso a fuentes de agua	Total de campos con acceso a agua potable (sí/no), detalle de fuente (pozo, acueducto, externo).	
+	Tecnología disponible en campos	Totales de dispositivos por campo (e.g. celular, computadora) – obtenido de la relación campo_dispositivos.	
+	Acceso a recursos eléctricos	(Si estuviera en la base) porcentaje de campos con suministro eléctrico activo.	
+	Evolución de cabezas de ganado por período	Fecha/ciclo, especie, categoría/raza, total de animales (gráfico de serie temporal).	
+ 
+Resumen de Entidades de la Base de Datos
+A continuación, en esta tabla se identifican las siguientes entidades principales y sus atributos más importantes:
+
+
+
+Entidad	Descripción	Atributos Claves
+usuarios	Representa a cada usuario del sistema (productores, superadmins,
+institucionales)	id, email, password, rol, verificado, activo
+instituciones	Organizaciones
+participantes (INTA, cooperativas, etc.)	id, nombre, contacto_email, validada
+institucional_participantes	Relación entre usuarios e
+instituciones	id, usuario_id, institucion_id,
+rol, activo
+solicitudes_verificacion	Gestión de solicitudes de acceso a instituciones	id, usuario_id, institucion_id,
+token, fecha_solicitud, estado
+condicion_tenencia	Catálogo de tipos de
+tenencia de tierra	id, nombre
+productores	Información personal de los productores agropecuarios	id, usuario_id, nombre, dni, fecha_nacimiento, localidad,
+condicion_tenencia_id, activo
+fuente_agua	Catálogo de fuentes de
+agua para humanos o animales	id, nombre
+tipo_pasto	Catálogo de tipos de pasto
+predominante en el campo	id, nombre
+tipo_suelo	Catálogo de tipos de suelo
+predominante en el campo	id, nombre
+campos	Información de los campos/productores: ubicación, recursos, etc.	id, productor_id, localidad, agua_humano_fuente_id, agua_humano_en_casa, agua_animal_fuente_id, agua_animal_en_casa, tipo_pasto_predominante_id, tipo_suelo_predominante_id,
+activo
+dispositivos	Catálogo de dispositivos
+tecnológicos (celular, pc, etc.)	id, nombre
+ 
+
+campo_dispositivos	Relación N:M entre campos y dispositivos
+disponibles	id, campo_id, dispositivo_id
+superficies	Información de superficie
+y uso ganadero de los campos	id, campo_id,
+total_hectareas, hectareas_ovinos, monte
+especies	Catálogo de especies
+ganaderas (ovino, caprino, etc.)	id, nombre
+razas	Razas por especie
+ganadera	id, especie_id, nombre
+categorias_animales	Categorías de animales
+según especie (e.g. oveja, cordero)	id, especie_id, nombre
+tipo_registro	Tipo de origen del dato
+(inicial, manual, periódico)	id, nombre
+configuracion_actualizaciones	Configuración de actualizaciones ganaderas por productor	id, frecuencia_dias, ultima_actualizacion, proxima_actualizacion,
+superadmin_id, activo
+historico_actualizaciones	Historial de ejecuciones
+de actualizaciones de stock	id, configuracion_id,
+fecha_inicio, fecha_fin, registros_recibidos
+stock_animal	Registro de stock ganadero por especie, raza y categoría	id, productor_id, especie_id, categoria_id, raza_id, fecha_registro, cantidad, tipo_registro_id, periodo_actualizacion_id,
+es_actualizacion_periodica, observaciones
+
+Diseño de relaciones entre tablas:
+Las entidades se vinculan mediante relaciones uno-a-muchos (1:N) o muchos-a-muchos (N:M). En el modelo relacional, esto se logra asignando claves foráneas (FK) que referencian claves primarias (PK) de otras tablas. Por ejemplo, la tabla productores tiene una FK usuario_id que referencia a usuarios.id (relación 1:N: un Usuario puede ser productor de muchos registros). A continuación se resume la principales relaciones entre tablas (cada relación 1:N):
+ 
+
+Tabla Padre (1)	Tabla Hija (N)	Clave Foránea (en hija)	Cardina lidad
+usuarios.id	institucional_participantes. usuario_id	usuarios.id (PK) → institucional_participantes. usuario_id (FK)	1 : N
+instituciones.id	institucional_participantes. institucion_id	instituciones.id (PK) → institucional_participantes. institucion_id (FK)	1 : N
+usuarios.id	solicitudes_verificacion.usu ario_id	usuarios.id → solicitudes_verificacion.usu ario_id	1 : N
+instituciones.id	solicitudes_verificacion.inst itucion_id	instituciones.id → solicitudes_verificacion.inst itucion_id	1 : N
+usuarios.id	productores.usuario_id	usuarios.id →
+productores.usuario_id	1 : N
+condicion_tenencia. id	productores.condicion_ten encia_id	condicion_tenencia.id → productores.condicion_ten encia_id	1 : N
+productores.id	campos.productor_id	productores.id →
+campos.productor_id	1 : N
+fuente_agua.id	campos.agua_humano_fuen te_id	fuente_agua.id → campos.agua_humano_fuen te_id	1 : N
+fuente_agua.id	campos.agua_animal_fuent e_id	fuente_agua.id → campos.agua_animal_fuent e_id	1 : N
+tipo_pasto.id	campos.tipo_pasto_predom inante_id	tipo_pasto.id → campos.tipo_pasto_predom inante_id	1 : N
+tipo_suelo.id	campos.tipo_suelo_predom inante_id	tipo_suelo.id → campos.tipo_suelo_predom inante_id	1 : N
+ 
+campos.id	campo_dispositivos.campo_ id	campos.id → campo_dispositivos.campo_ id	1 : N
+dispositivos.id	campo_dispositivos.disposi tivo_id	dispositivos.id → campo_dispositivos.disposi tivo_id	1 : N
+campos.id	superficies.campo_id	campos.id →
+superficies.campo_id	1 : N
+especies.id	razas.especie_id	especies.id →
+razas.especie_id	1 : N
+especies.id	categorias_animales.especi e_id	especies.id → categorias_animales.especi e_id	1 : N
+usuarios.id	configuracion_actualizacio nes.superadmin_id	usuarios.id → configuracion_actualizacio nes.superadmin_id	1 : N
+configuracion_actu alizaciones.id	historico_actualizaciones.c onfiguracion_id	configuracion_actualizacio nes.id → historico_actualizaciones.c onfiguracion_id	1 : N
+productores.id	stock_animal.productor_id	productores.id →
+stock_animal.productor_id	1 : N
+especies.id	stock_animal.especie_id	especies.id →
+stock_animal.especie_id	1 : N
+categorias_animale s.id	stock_animal.categoria_id	categorias_animales.id →
+stock_animal.categoria_id	1 : N
+razas.id	stock_animal.raza_id	razas.id →
+stock_animal.raza_id	1 : N
+tipo_registro.id	stock_animal.tipo_registro_ id	tipo_registro.id → stock_animal.tipo_registro_ id	1 : N
+configuracion_actu alizaciones.id	stock_animal.periodo_actua lizacion_id	configuracion_actualizacio nes.id →	1: N
+ 
+
+		stock_animal.periodo_actua lizacion_id	
+
+Cada relación 1:N queda implementada mediante la clave foránea de la tabla hija apuntando a la clave primaria de la tabla padre . (Las relaciones muchos-a-muchos se descomponen en estas relaciones 1:N mediante tablas intermedias; por ejemplo, campo_dispositivos es intermedia entre campos y dispositivos .) Las restricciones de integridad referencial (por ejemplo, UNIQUE en participantes) aseguran consistencia de los datos.
+Validación con informes:
+Para cada informe de salida, verificamos que la estructura de tablas permite obtenerlo mediante consultas SQL. A continuación se proponen consultas ejemplo y se explica su lógica:
+Stock animal por especie/raza/categoría: Se consulta la tabla stock_animal , uniendo con productores , especies , razas y categorias_animales . Ejemplo:
+
+
+Este resultado lista las cabezas de ganado actuales por productor. Por ejemplo, podría devolver:
+
+productor_id productor	especie	categoría	raza	cantidad	fecha_registro
+
+
+1	
+Juan Pérez	
+Ovino	
+Oveja	
+Merino	
+50	2025-06-01
+12:00:00
+
+2	María Góme z	
+Caprin o	
+Macho	
+Anglon	
+12	2025-06-02
+09:30:00
+ 
+Nacimientos/Muertes/Ventas: En el script actual no hay tablas específicas para estos eventos. Teóricamente se podrían clasificar en stock_animal usando diferentes tipo_registro (e.g. 'nacimiento', 'venta'). Si existieran, podríamos hacer consultas tipo:
+
+Esto agrupará los eventos por fecha, especie, categoría y tipo. Sin datos de ejemplo, queda verificado conceptualmente que la tabla stock_animal permite distinguir estas operaciones.
+
+
+Seguimiento de productores activos/inactivos: Se puede determinar la última fecha de registro de stock de cada productor, y compararla con una fecha umbral. Ejemplo:
+
+Los productores con ultima_actualizacion antigua o NULL se considerarían inactivos.
+
+
+Estadísticas de campos: Para cada categoría, se puede usar GROUP BY . Por ejemplo, tipos de pasto en los campos:
+ 
+ 
+
+●	Gráficos de evolución de ganado: Usando stock_animal con agrupar por fecha (o por ciclo de actualización), por ejemplo:
+
+Estos datos servirían para generar gráficos de serie temporal de población por especie.
+
+En todos los casos, la estructura de tablas permite ejecutar las consultas necesarias para generar los informes listados. Cada consulta muestra que los campos requeridos están disponibles en las tablas diseñadas.
+ 
+Representación del modelo Entidad/Relación (ER):
+
+
+Gestión de Usuarios e Instituciones
+Usuarios: Tabla principal de usuarios del sistema (productores, técnicos, institucionales, superadmin). Contiene el ID (clave primaria), correo electrónico, contraseña, el rol (enum: superadmin, institucional o productor), además de flags verificado y activo para control de acceso.
+instituciones: Catálogo de instituciones (ej. INTA, cooperativas). Registra el ID, nombre y email de contacto, y si está validada. El superadmin aprueba nuevas instituciones.
+institucional_participantes: Entidad intermedia que vincula usuarios e instituciones como participantes. Incluye su propio ID, los FKs usuario_id y institucion_id (ambos claves foráneas a usuarios.id y instituciones.id), y el rol del usuario dentro de la institución (admin, tecnico, etc.). Un usuario sólo puede pertenecer a una institución a la vez (índice UNIQUE en usuario_id e institucion_id).
+solicitudes_verificacion: Registra solicitudes de ingreso a una. Contiene ID, FKs usuario_id y institucion_id, un token único para aprobación, la fecha de solicitud y el estado (pendiente, aprobada, rechazada). Permite al superadmin o admins institucionales gestionar accesos.
+Estas entidades se conectan entre sí: por ejemplo, un usuario puede ser vinculado a una institución a través de institucional_participantes, y también puede solicitar acceso
+ 
+mediante solicitudes_verificacion (ambas relaciones indicadas con flechas hacia estas tablas en el diagrama).
+Gestión de Productores y Campos
+condicion_tenencia: Catálogo de condiciones de tenencia de la tierra (propietario, arrendatario, etc.). Contiene ID y nombre.
+productores: Datos de productores registrados. Incluye ID (PK), opcional usuario_id (FK a usuarios.id si el productor tiene cuenta de usuario), nombre, DNI único, fecha de nacimiento, lugar (municipio, paraje, dirección), celular, el FK condicion_tenencia_id y flag activo. Relaciona productores con usuarios e indica su estatus de tenencia.
+fuente_agua, tipo_pasto, tipo_suelo: Catálogos auxiliares de recursos del. Cada uno tiene ID y nombre (por ejemplo, fuente_agua podría ser pozo o arroyo).
+Sirven para normalizar los tipos de agua disponibles, pasto y suelo predominantes en los campos.
+campos: Representa las unidades de producción asociadas a cada. Incluye ID, FK productor_id (referencia a productores.id), ubicación (localidad, latitud, longitud, catastral), datos de agua (FKs agua_humano_fuente_id y agua_animal_fuente_id a fuente_agua.id, booleanos sobre si hay agua en casa y distancias), y referencias a pasto/suelo predominantes (FKs a tipo_pasto y tipo_suelo). También contiene observaciones generales y un flag activo.
+dispositivos: Catálogo de dispositivos tecnológicos (ej. celular, PC). Registra
+ID y nombre.
+campo_dispositivos: Tabla relacional N:M que asocia múltiples dispositivos a cada campo. Registra ID, FK campo_id (a campos.id) y dispositivo_id (a dispositivos.id).
+superficies: Detalles agroecológicos del campo. Contiene ID, FK campo_id, y campos numéricos para hectáreas totales, dedicadas a ovinos, bovinos, frutales, hortalizas, agricultura, y datos sobre cobertura vegetal (árboles, monte, etc.).
+En este módulo, productores se vincula opcionalmente a un usuario (para login) y siempre tiene una condición de tenencia. Cada productor puede tener varios campos, donde se detallan recursos como agua y suelo. Los campos usan los catálogos de fuente_agua, tipo_pasto y tipo_suelo para estandarizar la información. A su vez, un campo puede disponer de varios dispositivos (a través de campo_dispositivos) y registrar sus superficies productivas. Las relaciones correspondientes se ilustran con las líneas entre las entidades en el diagrama.
+Información Ganadera
+especies: Catálogo de especies ganaderas registrables (ovino, caprino, bovino, etc.). Contiene ID y nombre.
+ 
+razas: Catálogo de razas ganaderas. Incluye ID, especie_id (FK a especies.id) y nombre. Cada raza está asociada a una especie.
+categorias_animales: Catálogo de categorías por. Registra ID, especie_id (FK a especies.id) y nombre (ej. cordero, oveja, macho reproductor). Se utiliza para clasificar animales dentro de cada especie.
+tipo_registro: Catálogo de tipos de registro de stock. Incluye ID y nombre (por ejemplo inicial, manual, periodico) para indicar el origen del dato.
+configuracion_actualizaciones: Configuración global de actualizaciones. Contiene ID, frecuencia en días (frecuencia_dias), fecha de última y próxima actualización, flag activo, y superadmin_id (FK a usuarios.id) indicando quién definió la política. Permite planificar la periodicidad de las cargas de stock.
+historico_actualizaciones: Registros de cada ciclo de actualización. Guarda ID, FK configuracion_id (a la tabla anterior), fecha de inicio y fin del ciclo, y número de registros recibidos. Sirve para auditar las cargas periódicas.
+stock_animal: Registro principal del inventario ganadero por productor. Cada fila almacena el conteo de animales para una combinación específica: campos productor_id (FK a productores.id), especie_id, categoria_id, raza_id, fecha de registro, cantidad, tipo_registro_id (FK), y opcionalmente periodo_actualizacion_id (FK a configuracion_actualizaciones.id). También incluye un indicador booleano si es parte de actualización periódica, y observaciones. Se impone una restricción UNIQUE para evitar duplicados por combinación dentro de un mismo ciclo. La entidad conecta los catálogos de
+especies, razas, categorias_animales y tipo_registro con cada productor.

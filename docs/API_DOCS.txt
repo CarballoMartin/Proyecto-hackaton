@@ -1,0 +1,92 @@
+## Documentación de la API de Autenticación
+
+### Resumen del Flujo
+
+La autenticación se realiza en dos pasos. Primero, la aplicación solicita un código de un solo uso (OTP) enviando el email o teléfono del usuario. Segundo, la aplicación envía de vuelta el identificador junto con el OTP para recibir a cambio un token de acceso.
+
+Este token deberá ser incluido en todas las futuras peticiones a la API que requieran autenticación.
+
+**URL Base de la API:** `http://<TU_DOMINIO>/api`
+
+---
+
+### 1. Solicitar Código de Acceso
+
+Este endpoint inicia el proceso de login. El servidor generará un código de 6 dígitos y lo enviará al email o teléfono del usuario (actualmente configurado para usar un log de prueba en lugar de un SMS real).
+
+- **Endpoint:** `/solicitar-codigo`
+- **Método:** `POST`
+- **Headers:**
+  - `Content-Type: application/json`
+  - `Accept: application/json`
+- **Cuerpo de la Petición (JSON):**
+  ```json
+  {
+    "identificador": "string"
+  }
+  ```
+  - `identificador`: El email o el número de teléfono del productor.
+
+- **Respuesta Exitosa (Código `200 OK`):**
+  ```json
+  {
+    "message": "Si su cuenta de productor existe, se ha enviado un código de acceso."
+  }
+  ```
+  *(Nota: Por seguridad, la respuesta es siempre la misma, exista o no el usuario).*
+
+---
+
+### 2. Iniciar Sesión y Obtener Token
+
+Una vez que el usuario recibe el código, la aplicación lo envía a este endpoint para completar el inicio de sesión y obtener el token de acceso.
+
+- **Endpoint:** `/iniciar-sesion`
+- **Método:** `POST`
+- **Headers:**
+  - `Content-Type: application/json`
+  - `Accept: application/json`
+- **Cuerpo de la Petición (JSON):**
+  ```json
+  {
+    "identificador": "string",
+    "codigo": "string"
+  }
+  ```
+  - `identificador`: El mismo email o teléfono usado en el paso 1.
+  - `codigo`: El código de 6 dígitos recibido por el usuario.
+
+- **Respuesta Exitosa (Código `200 OK`):**
+  ```json
+  {
+    "message": "Inicio de sesión exitoso",
+    "access_token": "1|xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "token_type": "Bearer",
+    "user": {
+      "id": 10,
+      "name": "nombre-usuario",
+      "email": "usuario@email.com",
+      "rol": "productor"
+    }
+  }
+  ```
+
+- **Respuesta de Error (Código `401 Unauthorized`):**
+  ```json
+  {
+    "error": "El código de acceso es incorrecto o ha expirado."
+  }
+  ```
+
+---
+
+### 3. Realizar Peticiones Autenticadas
+
+Una vez obtenido el `access_token`, la aplicación móvil debe guardarlo de forma segura y enviarlo en la cabecera de todas las futuras peticiones a endpoints protegidos.
+
+- **Header de Autenticación:**
+  - `Authorization: Bearer <access_token>`
+
+*(Ej: `Authorization: Bearer 1|xxxxxxxxxxxxxxxxxxxxxxxx`)*
+
+---

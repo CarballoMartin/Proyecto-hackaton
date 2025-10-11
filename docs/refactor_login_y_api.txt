@@ -1,0 +1,75 @@
+Resumen Técnico: Refactorización del Sistema de Autenticación y API Inicial
+
+Fecha: 30 de agosto de 2025
+
+## Objetivo General
+
+Se refactorizó el sistema de autenticación para unificar la experiencia de usuario, eliminando la dependencia de contraseñas en el flujo de creación y login, y se sentaron las bases para una API REST para una futura aplicación móvil.
+
+El nuevo sistema permite a los usuarios iniciar sesión tanto en la plataforma web como en la móvil mediante un sistema de código de un solo uso (OTP) enviado a su email o teléfono, conservando al mismo tiempo el login tradicional con contraseña en la web como una opción.
+
+---
+
+## Detalle de Cambios por Módulo
+
+### 1. Refactorización del Flujo de Creación de Usuarios (Panel de Admin)
+
+El objetivo fue eliminar el envío de contraseñas temporales al crear un productor.
+
+- **`app/Actions/Productor/CreateProductor.php`**
+  - **QUÉ SE HIZO:** Se modificó el método `ejecutar()`.
+  - **POR QUÉ:** Se eliminó la generación de contraseñas en texto plano (`Str::random(10)`). Al crear el `User`, ahora se le asigna una contraseña aleatoria, hasheada y desconocida (`Hash::make(Str::random(32))`) como medida de seguridad. El evento `ProductorCreated` ahora se despacha solo con el objeto `$user`, sin la contraseña.
+
+- **`app/Events/ProductorCreated.php`**
+  - **QUÉ SE HIZO:** Se modificó el constructor `__construct()`.
+  - **POR QUÉ:** Para que coincidiera con el nuevo `dispatch`, el constructor ahora solo espera recibir el objeto `User`, eliminando el segundo parámetro `$plainTextPassword`. Se eliminó la propiedad pública `$plainTextPassword`.
+
+- **`app/Listeners/SendWelcomeNotificationListener.php`**
+  - **QUÉ SE HIZO:** Se modificó el método `handle()`.
+  - **POR QUÉ:** La llamada al Mailable se actualizó para no pasar la contraseña. Ahora es `new ProductorBienvenidaMail($event->user)`. También se eliminó temporalmente la interfaz `ShouldQueue` para diagnosticar un problema con el envío de correos, confirmando que el problema era un worker de colas inactivo en el entorno de desarrollo del usuario.
+
+- **`app/Mail/ProductorBienvenidaMail.php`**
+  - **QUÉ SE HIZO:** Se modificó el constructor y el asunto del email.
+  - **POR QUÉ:** Se adaptó el constructor para que solo reciba `User`. Se eliminó la propiedad `$password`. El asunto del email se actualizó a un mensaje de bienvenida más apropiado.
+
+- **`resources/views/emails/productor-bienvenida.blade.php`**
+  - **QUÉ SE HIZO:** Se reescribió completamente la plantilla del email.
+  - **POR QUÉ:** Se eliminó la sección que mostraba las credenciales. El nuevo texto da la bienvenida al usuario y le explica que para iniciar sesión debe usar su email o teléfono para recibir un código de acceso, en lugar de usar una contraseña.
+
+### 2. Implementación de Login sin Contraseña (OTP)
+
+Se implementó la lógica central para el login mediante código de un solo uso, tanto para la API como para la web.
+
+- **`app/Http/Controllers/Api/AuthController.php` (NUEVO)**
+  - **QUÉ SE HIZO:** Se creó este controlador para los endpoints de la API.
+  - **POR QUÉ:** Contiene la lógica para `solicitarCodigo` (valida identificador, busca usuario, genera y cachea un OTP, y lo envía por email) y para `iniciarSesion` (valida el código y, si es correcto, genera un token de API de Sanctum).
+
+- **`routes/api.php`**
+  - **QUÉ SE HIZO:** Se añadieron dos nuevas rutas `POST`.
+  - **POR QUÉ:** Se registraron `/api/solicitar-codigo` y `/api/iniciar-sesion` apuntando a los métodos correspondientes en `AuthController`.
+
+- **`app/Livewire/Auth/LoginOtp.php` (NUEVO)**
+  - **QUÉ SE HIZO:** Se creó este componente de Livewire para manejar el login OTP en la web.
+  - **POR QUÉ:** Encapsula toda la lógica de dos pasos (solicitar y verificar código) y gestiona el estado de la UI sin recargas de página. Reutiliza la misma lógica de búsqueda que el `AuthController` y usa `Auth::login()` para el inicio de sesión web.
+
+- **`resources/views/livewire/auth/login-otp.blade.php` (NUEVO)**
+  - **QUÉ SE HIZO:** Se creó la vista para el componente anterior.
+  - **POR QUÉ:** Contiene el HTML para el formulario, que cambia dinámicamente para pedir el identificador (paso 1) o el código (paso 2).
+
+- **`resources/views/auth/partials/login-form.blade.php`**
+  - **QUÉ SE HIZO:** Se reestructuró el archivo.
+  - **POR QUÉ:** Usando Alpine.js (`x-data`, `x-show`), se implementó una interfaz de pestañas que permite al usuario elegir entre el formulario de contraseña original (que se conservó intacto) y el nuevo flujo de OTP (que renderiza el componente `auth.login-otp`).
+
+### 3. Correcciones y Debugging
+
+- **Uso de `telefono` vs `celular`:** Se detectó y corrigió el uso incorrecto de `celular` en lugar de `telefono` en las consultas a la base de datos en `AuthController` y `LoginOtp`. Se verificaron las migraciones para confirmar los nombres correctos de las columnas.
+- **Error de Argumentos en Evento:** Se diagnosticó y corrigió un error fatal causado por la discrepancia de argumentos en el evento `ProductorCreated` y su constructor.
+- **Diagnóstico de Cola de Trabajos:** Se identificó que el no envío de emails se debía a que el Listener se procesaba en cola y el worker no estaba activo en el entorno de desarrollo. Se gestionó el diagnóstico y la solución con el usuario.
+
+---
+
+## Próximos Pasos / Puntos a Considerar
+
+- El envío de OTP por SMS no está implementado y requerirá la integración de un proveedor externo.
+- El entorno de producción debe tener un worker de colas (`php artisan queue:work`) correctamente configurado y monitorizado para que los emails de bienvenida y OTP se envíen de forma fiable.
+- El archivo `.env` debe tener las credenciales correctas del servidor de correo (Mailtrap para desarrollo, otro para producción).

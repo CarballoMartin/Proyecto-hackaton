@@ -1,0 +1,178 @@
+Perfecto — voy a reprocesar todo lo que discutimos y darte UNA respuesta clara, compacta y accionable para que arregles el panel del productor sin vueltas. Me enfocaré en las causas reales del problema y en soluciones concretas (con snippets listos para pegar).
+
+Resumen del problema
+
+Estructuralmente los dos entrypoints (Admin y Productor) son casi idénticos.
+
+En el Admin la navegación funciona porque cada subpanel (por ejemplo el panel de product ores) está encapsulado: cada panel vive como su propio componente/Livewire con su propio x-data.
+
+En el Productor (tu entrypoint de usuario) tienes todo en un mismo nivel: x-data controla el tab principal y dentro cargas componentes Livewire que hacen renders. Cuando Livewire re-renderiza, Alpine puede perder/resete ar su estado → navegación "se rompe".
+
+También posibles causas secundarias: eventos $dispatch con nombres inconsistentes, colisiones de window.location.hash, o que el contenedor Alpine esté siendo re-renderizado por Livewire.
+
+Reglas prácticas (rápidas)
+
+Separar responsabilidad: cada panel que tenga UI/estado propio debe tener su propio x-data (idealmente dentro de un subcomponente Livewire).
+
+No permitir que Livewire reemplace el contenedor Alpine que mantiene el tab (o sincronizar ambos con @entangle).
+
+Usar nombres de eventos coherentes (change-productor-tab vs change-admin-tab) y nombres de hash con namespace si hay riesgo de conflicto.
+
+Usar localStorage / hash / @entangle como respaldo para evitar perder la pestaña tras un re-render.
+
+3 soluciones recomendadas (con código)
+Opción A — Mejor práctica: Encapsular subsecciones como subcomponentes Livewire (recomendado)
+
+Cada pestaña “grande” que hace renders pesados o modales debería ser un Livewire component independiente y contener su propio x-data si necesita Alpine. Así Livewire re-renders no afectan el tab del entrypoint.
+
+Ejemplo (blade entrypoint productor, sólo controla qué cargar):
+
+<div x-data="{
+    tab: window.location.hash ? window.location.hash.substring(1).replace('prod-','') : 'inicio',
+    changeTab(newTab) { this.tab = newTab; window.location.hash = 'prod-'+newTab; }
+}" @change-productor-tab.window="changeTab($event.detail.tab)">
+
+  {{-- header... --}}
+
+  <div>
+    <template x-if="tab === 'inicio'">
+      @livewire('productor.dashboard') {{-- dashboard como componente --}}
+    </template>
+
+    <template x-if="tab === 'perfil'">
+      @livewire('productor.perfil')    {{-- perfil como componente --}}
+    </template>
+
+    <template x-if="tab === 'unidades-productivas'">
+      @livewire('productor.unidades-productivas.index') {{-- index con su propio x-data --}}
+    </template>
+    ...
+  </div>
+</div>
+
+
+Y dentro de productor.unidades-productivas.index ponés tu tabla, modales y su propio x-data para la navegación/estados locales.
+
+Por qué funciona: Livewire re-renderiza sólo el subcomponente; el Alpine del entrypoint no se toca.
+
+Opción B — Sin reestructurar: Entangle tab entre Livewire y Alpine
+
+Si tu entrypoint es un componente Livewire (es decir la vista actual está dentro de Livewire), usar @entangle sincroniza estado entre Livewire y Alpine y evita reseteos.
+
+Livewire (Componente PHP):
+
+// ProductorPanel.php
+public $tab = 'inicio';
+
+public function mount()
+{
+    $hash = request()->getFragment(); // si usás hash via JS, podrías pasar por JS -> property
+    // inicializá si tiene sentido
+}
+
+
+Blade:
+
+<div x-data="{ tab: @entangle('tab') }" x-init="() => {
+    if (!['inicio','perfil','unidades-productivas','stock','reportes','graficos'].includes(tab)) tab='inicio';
+}">
+  {{-- ahora Alpine y Livewire comparten tab --}}
+  <template x-if="tab === 'unidades-productivas'">
+    @livewire('productor.unidades-productivas.index')
+  </template>
+</div>
+
+
+En Livewire podés cambiar $this->tab = 'stock' o emitir eventos y todo queda persistente tras renders.
+
+Opción C — Apoyo simple: Mantener tab en localStorage + namespaced hash
+
+Si preferís una solución rápida sin tocar Livewire:
+
+Blade (entrypoint):
+
+<div x-data="{
+  tab: localStorage.getItem('productorTab') || (window.location.hash ? window.location.hash.substring(1).replace('prod-','') : 'inicio'),
+  changeTab(newTab) { this.tab = newTab; window.location.hash = 'prod-'+newTab; localStorage.setItem('productorTab', newTab); }
+}" @change-productor-tab.window="changeTab($event.detail.tab)" x-init="() => {
+  if (!['inicio','perfil','unidades-productivas','stock','reportes','graficos'].includes(tab)) {
+     tab = 'inicio'; window.location.hash = 'prod-inicio'; localStorage.setItem('productorTab','inicio');
+  }
+}">
+
+
+Namespacing el hash (prod-...) evita colisiones con otros panels (p. ej. admin-productores).
+
+localStorage asegura restauración si Alpine se resetea.
+
+Otras recomendaciones prácticas y bugs a chequear
+
+Eventos de cambio: Asegurate que todas las acciones que deben cambiar pestaña en el panel productor usen exactamente el evento change-productor-tab.
+
+Ejemplo correcto: $dispatch('change-productor-tab', { tab: 'stock' }).
+
+Si desde un botón todavía despachas change-admin-tab, el productor no recibirá el evento.
+
+Colocación del Alpine root:
+
+Si tu div x-data está dentro de un componente Livewire que se re-renderiza por completo, Alpine puede reiniciarse.
+
+Mejor poner el x-data fuera (en la plantilla blade que no es renderizada por Livewire) o aplicar wire:ignore.self con cuidado (ver punto 4).
+
+wire:ignore / wire:ignore.self
+
+wire:ignore.self en el contenedor Alpine evita que Livewire reemplace ese elemento en re-renders.
+
+USAR CON PRECAUCIÓN: impediría actualizaciones desde Livewire a ese nodo. Úsalo sólo si esa parte no necesita ser actualizada por Livewire.
+
+Ejemplo:
+
+<div x-data="..." wire:ignore.self>
+  {{-- children Livewire components siguen funcionando --}}
+</div>
+
+
+Nota: si los hijos son Livewire components renderizados dentro, seguirán funcionar. Lo que se evita es que Livewire reemplace el propio contenedor.
+
+Modales & dispatchs: cuando abrís modales desde Livewire con eventos ($dispatch('verUnidadProductiva', { id })) asegurate de que los listeners Alpine estén en el componente que no se resetea o en el subcomponente correspondiente.
+
+Chequeo rápido (lista para debug):
+
+ Todos los dispatch usan change-productor-tab (o el nombre que elegiste).
+
+ El hash que guardás está namespaced (prod-...).
+
+ El Alpine root no se está re-renderizando por Livewire (o usás @entangle).
+
+ Los subcomponentes grandes (tablas, modales) son Livewire independientes.
+
+ No hay duplicidad de x-data con el mismo nombre de variable global que cause colisiones.
+
+Recomendación concreta (qué aplicar ahora)
+
+Si podés reorganizar: encapsular (Opción A). Es la solución más estable y limpia.
+
+Si necesitás un hotfix rápido sin reestructurar: aplicar localStorage + namespaced hash (Opción C) y comprobar eventos dispatch.
+
+Si tu vista productora ya es un Livewire component: usa @entangle('tab') (Opción B).
+
+Snippets útiles listos para pegar
+Dispatch desde un botón (asegurar nombre correcto)
+<a href="#" @click.prevent="$dispatch('change-productor-tab', { tab: 'unidades-productivas' })">Unidades</a>
+
+Entangle ejemplo (Livewire <-> Alpine)
+<!-- En tu componente Livewire PHP: public $tab = 'inicio'; -->
+<div x-data="{ tab: @entangle('tab') }">
+  <button @click="tab='stock'">Ir a stock</button>
+  <template x-if="tab === 'stock'">
+    @livewire('productor.stock.listar-stock')
+  </template>
+</div>
+
+LocalStorage + namespaced hash
+<div x-data="{
+  tab: localStorage.getItem('productorTab') || (window.location.hash ? window.location.hash.substring(1).replace('prod-','') : 'inicio'),
+  changeTab(newTab) { this.tab = newTab; window.location.hash = 'prod-'+newTab; localStorage.setItem('productorTab', newTab); }
+}" @change-productor-tab.window="changeTab($event.detail.tab)">
+  ...
+</div>

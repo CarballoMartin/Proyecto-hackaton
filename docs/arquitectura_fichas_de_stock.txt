@@ -1,0 +1,86 @@
+Propuesta de Arquitectura: Fichas de Declaración de Stock
+
+## 1. Problema Identificado
+
+El sistema actual registra el stock como "hechos" individuales en la tabla `stock_animals`, pero carece de un concepto de "evento de declaración" o "ficha" que agrupe estos registros en una sola fotografía coherente del stock de un productor en un momento determinado. Esto dificulta la trazabilidad y la gestión de las declaraciones como una unidad.
+
+---
+
+## 2. Solución Propuesta: El Concepto de "Ficha de Declaración"
+
+Materializar el concepto de "ficha" en la base de datos, creando una nueva tabla que represente cada evento de declaración de stock. Esto proporciona integridad, trazabilidad y una mejor experiencia de usuario.
+
+---
+
+## 3. Plan de Implementación
+
+### Paso 1: Crear la tabla `declaraciones_stock`
+
+Crear una nueva migración para una tabla que será la entidad central de este flujo.
+
+**Columnas:**
+- `id` (Clave Primaria)
+- `productor_id` (FK a `productores.id`): Quién hizo la declaración.
+- `periodo_id` (FK a `configuracion_actualizacions.id`): A qué periodo corresponde.
+- `fecha_declaracion` (Date): Cuándo se realizó la declaración.
+- `estado` (String): Para manejar el ciclo de vida de la ficha. Valores sugeridos: `en_progreso`, `completada`, `archivada`.
+- `observaciones` (Text, nullable): Notas generales sobre la declaración.
+- `timestamps` (created_at, updated_at)
+
+### Paso 2: Modificar la tabla `stock_animals`
+
+Actualizar la tabla existente para que cada registro de stock pertenezca a una única declaración.
+
+**Acciones:**
+- **Añadir columna:** `declaracion_id` (FK a `declaraciones_stock.id`).
+- **Eliminar columna (Recomendado):** `periodo_actualizacion_id`. Esta información ahora se obtiene a través de la relación `declaracion->periodo`, simplificando el modelo y evitando la duplicación de datos.
+- **Eliminar columna (Recomendado):** `es_actualizacion_periodica`. El contexto de la declaración ahora define esto.
+
+### Paso 3: Implementar el Nuevo Flujo de Usuario (UX)
+
+1.  **Iniciar Declaración:** Desde el "Cuaderno de Campo", el productor inicia una "Nueva Declaración". Esto crea un registro en `declaraciones_stock` con estado `en_progreso`.
+2.  **Carga de Animales:** Se presenta una interfaz para añadir/editar/eliminar líneas de stock (registros en `stock_animals`). Todos los registros creados en esta fase se asocian a través del `declaracion_id`. El productor puede guardar y continuar más tarde.
+3.  **Finalizar Declaración:** Al terminar, un botón "Finalizar y Enviar" cambia el estado de la declaración a `completada`, bloqueando la edición de sus registros de stock asociados.
+
+---
+
+## 4. Ventajas de la Solución
+
+- **Integridad de Datos:** Agrupa de forma inequívoca todos los registros de una misma declaración.
+- **Trazabilidad Completa:** Permite ver "fotos" exactas del stock en diferentes momentos.
+- **Mejor Experiencia de Usuario:** El concepto de una "ficha" o "borrador" es más natural e intuitivo.
+- **Flexibilidad:** Permite manejar borradores, correcciones y un historial claro de declaraciones.
+
+---
+---
+
+## 5. Resumen de Trabajo Realizado (Sesión del 26/08/2025)
+
+Se implementó toda la capa de base de datos y datos iniciales para la nueva arquitectura de "Fichas de Declaración".
+
+- **Migraciones:**
+    - Se creó la migración para la nueva tabla `declaraciones_stock`.
+    - Se modificó la migración `create_stock_animals` para eliminar columnas redundantes y añadir la nueva clave foránea `declaracion_id`.
+    - Se depuraron y corrigieron errores en las migraciones para asegurar un orden de operaciones correcto y evitar conflictos con las claves foráneas.
+
+- **Modelos:**
+    - Se creó el nuevo modelo `app/Models/DeclaracionStock.php`.
+    - Se definieron las relaciones (`belongsTo`, `hasMany`) en los modelos `DeclaracionStock`, `StockAnimal` y `Productor`.
+
+- **Seeders (Datos de Prueba):**
+    - Se actualizó `TipoRegistroSeeder` con valores más descriptivos y relevantes para el nuevo flujo.
+    - Se creó `ConfiguracionActualizacionSeeder` para asegurar que siempre exista un periodo de configuración.
+    - Se reordenó `DatabaseSeeder` para respetar las dependencias entre los datos.
+    - Se reescribió `StockAnimalSeeder` para que sea más robusto y se alinee a la nueva arquitectura, creando una Declaración y asociando el stock a ella.
+
+---
+
+## 6. Tareas Pendientes / Próximos Pasos
+
+1.  **Ejecutar la Migración:** El usuario debe ejecutar `php artisan migrate:fresh --seed` para aplicar todos los cambios en la base de datos.
+2.  **Retomar Tarea Original:** Volver a la refactorización de la vista de stock (`listar-stock`). La parte visual ya está hecha, pero falta la funcionalidad.
+3.  **Implementar Funcionalidad de Botones:**
+    - **Prioridad 1:** Botón "Ver Ficha" (📋). Debe abrir un modal mostrando los detalles del registro de stock.
+    - **Prioridad 2:** Botón "Ver Evolución" (📈). Debe mostrar un gráfico con el historial de esa categoría de animal.
+    - **Prioridad 3:** Botón "Imprimir" (🖨️).
+4.  **Desarrollar Flujo de Declaraciones:** Crear la interfaz de usuario (vistas de Livewire) para la gestión de las "Fichas de Declaración" que se describió en el plan (iniciar, guardar borrador, añadir líneas de stock, finalizar).

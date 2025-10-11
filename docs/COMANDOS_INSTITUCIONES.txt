@@ -1,0 +1,102 @@
+# 🚀 Comandos Rápidos - Sistema de Instituciones
+
+## ⚡ Comandos Esenciales
+
+### 1. Resetear Base de Datos Completa
+```bash
+php artisan migrate:fresh --seed
+```
+
+### 2. Solo Instituciones (si ya tienes otros datos)
+```bash
+php artisan db:seed --class=InstitucionSeederMejorado
+php artisan db:seed --class=UsuarioInstitucionalSeeder
+```
+
+### 3. Verificar Datos en Tinker
+```bash
+php artisan tinker
+```
+Luego ejecutar:
+```php
+App\Models\Institucion::count()  // Debería ser 10
+App\Models\User::where('rol', 'institucional')->count()  // Debería ser 10
+App\Models\InstitucionalParticipante::count()  // Debería ser 10
+```
+
+### 4. Limpiar Cache (si hay problemas)
+```bash
+php artisan optimize:clear
+```
+
+### 5. Ver Usuarios Institucionales Creados
+```php
+// En tinker:
+App\Models\User::where('rol', 'institucional')->get(['name', 'email'])
+```
+
+### 6. Ver Instituciones con Sus Admins
+```php
+// En tinker:
+App\Models\Institucion::with('participantes.usuario')->get(['nombre', 'validada'])
+```
+
+## 🔐 Credenciales de Prueba
+
+### Superadmin
+- Email: superadmin@test.com
+- Password: password
+
+### Instituciones (Todas usan password123)
+- INTA: admin@inta.misiones.test
+- UNaM: admin@unam.test
+- Ministerio: admin@agro.misiones.test
+- SENASA: admin@senasa.misiones.test
+- Cooperativa: admin@coopmisiones.test
+- Ganaderos: admin@ganaderossur.test
+- Fundación: admin@fundacionrural.test
+- Cámara: admin@camaraovinocaprina.test
+- IIAR: admin@iiar.test
+- ATA: admin@atecnicos.test
+
+## 🎯 URLs de Prueba
+
+### Panel Superadmin
+- http://localhost:8000/superadmin/instituciones
+
+### Paneles Institucionales
+- http://localhost:8000/institucional/dashboard
+
+## ⚠️ Notas Importantes
+
+1. El error en UnidadProductivaSeeder no afecta las instituciones
+2. Los logos están en public/logos/
+3. Usar SQLite en desarrollo
+4. Middleware role:institucional activo
+
+## 🔧 Troubleshooting
+
+### Si no se crean las instituciones:
+1. Verificar que exista la tabla instituciones
+2. Verificar que los logos existan en public/logos/
+3. Ejecutar: php artisan migrate:fresh --seed
+
+### Si no funcionan los logins:
+1. Verificar middleware en routes/web.php
+2. Limpiar cache: php artisan optimize:clear
+3. Verificar que los usuarios tengan rol 'institucional'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

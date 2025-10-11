@@ -1,0 +1,32 @@
+# Git
+.git
+.gitignore
+
+# Docker
+.dockerignore
+docker-compose.yml
+
+# Dependencies
+node_modules
+vendor
+
+# Laravel logs and cache
+/storage
+/bootstrap/cache
+
+# Build artifacts
+# /public/build  <- Comentado para que no lo ignore
+/public/hot
+
+# IDE / Editor
+.idea/
+.vscode/
+.editorconfig
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Env files
+.env
+.env.example

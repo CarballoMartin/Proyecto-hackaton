@@ -1,0 +1,80 @@
+Plan de Refactorización - Cuaderno de Campo (09/09/2025):
+
+1.  **Arquitectura General:**
+    *   Se usará un enfoque centrado en el cliente con Alpine.js para toda la gestión de la interfaz dentro de "Registrar Movimientos".
+    *   El componente de Livewire `RegistroMovimientos` actuará principalmente como un proveedor de datos inicial y receptor de la acción final de guardado.
+
+2.  **Flujo de la Vista "Registrar Movimientos":**
+    *   **Estado Inicial:** El panel central mostrará únicamente un selector para "Seleccionar Chacra".
+    *   **Al Seleccionar Chacra:**
+        *   El selector de chacra permanecerá visible.
+        *   Debajo del selector, aparecerá la tabla con el resumen de stock para la chacra seleccionada.
+        *   Aparecerán los botones "Registrar Altas" y "Registrar Bajas".
+    *   **Al presionar "Altas" o "Bajas":**
+        *   Se abrirá una ventana **modal** (ahora con estilo "Windows viejo").
+
+3.  **Funcionalidad del Modal de Registro:**
+    *   El modal contendrá el formulario para elegir especie, categoría, raza y cantidad.
+    *   Debe mantener la estética de "hoja de cálculo / sistema clásico".
+    *   Todos los datos de los selectores (especies, categorías, etc.) estarán precargados y serán gestionados por Alpine.js para una respuesta instantánea.
+    *   Al "Añadir", el modal se cerrará y el movimiento aparecerá en el panel de resumen de la derecha.
+
+4.  **Panel de Resumen (Derecha):**
+    *   Continuará acumulando los movimientos (altas/bajas) que se añadan desde el modal.
+    *   El botón "Guardar Declaración" en este panel fue eliminado.
+
+---
+
+### **Decisión de Arquitectura (Sesión 09/09/2025): Modelo de "Cuaderno de Campo Vivo"**
+
+Se abandona la idea de una finalización manual de la declaración por parte del usuario para adoptar un modelo más flexible y automático.
+
+**1. Lógica Principal:**
+    *   La declaración de un período se considera un "cuaderno vivo" o un borrador perpetuo (`en_progreso`) mientras el ciclo esté activo.
+    *   El usuario puede añadir movimientos en cualquier momento durante el ciclo sin la necesidad de "finalizar" o "enviar" la declaración.
+
+**2. Cierre Automático:**
+    *   Se implementará una **tarea programada en el servidor (cron job)** que se ejecutará periódicamente.
+    *   Cuando la fecha de fin de un ciclo de actualización se cumple, la tarea buscará todas las declaraciones `en_progreso` de ese ciclo y cambiará su estado a `completada` de forma automática.
+    *   La "foto" del cuaderno en ese momento se convierte en el registro oficial.
+
+**3. Experiencia de Usuario:**
+    *   El botón en el panel de resumen ya no será "Finalizar", sino "Guardar Movimientos en el Cuaderno", para persistir los cambios en el borrador activo.
+    *   La interfaz comunicará claramente la fecha de cierre del ciclo.
+    *   El sistema enviará notificaciones (email/app) a los productores antes del cierre para que revisen sus cuadernos.
+
+**4. Rol del Administrador:**
+    *   El administrador conserva la capacidad de reabrir una declaración `completada` para permitir correcciones, manteniendo la red de seguridad del sistema.
+
+---
+
+### **Refactorización Detallada del Cuaderno de Campo (Sesión 09/09/2025 - Continuación):**
+
+*   **Rediseño del Panel de Resumen (UI/UX):**
+    *   Transformación de una tabla a una lista de renglones compactos estilo "Excel".
+    *   Cada renglón muestra "Tipo (ALTA/BAJA)", "Especie", "Categoría", "Raza" y "Cantidad".
+    *   Implementación de una barra de color lateral (verde para altas, rojo para bajas) para identificación visual rápida del tipo de movimiento.
+    *   Diseño de filas optimizado para la compacidad y alineación columnar.
+*   **Panel Lateral Expandible (Rendimiento y UX):**
+    *   Refactorización completa de la lógica de expansión/colapso del panel lateral de Livewire a Alpine.js.
+    *   Logra una transición instantánea y suave al expandirse sobre el contenido principal (sin empujarlo).
+    *   Diseño de botón "pestaña" integrado al panel, con estilo "Windows viejo" (bordes duros, sin redondeos) y rotación de flecha para indicar el estado.
+*   **Gestión de Stock en Tiempo Real (Frontend):**
+    *   La tabla de stock principal se actualiza instantáneamente en la interfaz al registrar altas o bajas.
+    *   Implementación de lógica para que las filas de stock con cantidad cero desaparezcan automáticamente de la vista, manteniendo la tabla limpia y relevante.
+*   **Modales de Aviso Personalizados:**
+    *   Reemplazo de las funciones `alert()` nativas del navegador por modales de aviso personalizados para errores de validación.
+    *   Diseño de los modales consistente con la estética "Windows viejo" de la aplicación (barras de título, bordes, iconos).
+*   **Botón "Limpiar Resumen":**
+    *   Añadido un botón en el panel de resumen que permite al usuario limpiar todos los movimientos temporales de la sesión actual en el resumen.
+*   **Botón "Cancelar Cambios":**
+    *   Implementado un botón para descartar todos los cambios realizados en la sesión actual en la interfaz.
+    *   Incluye un modal de confirmación con advertencia de pérdida de datos y estilo "Windows viejo".
+    *   Al confirmar la cancelación, el stock en la interfaz revierte a su último estado guardado en la base de datos.
+*   **Integración de Persistencia de Datos:**
+    *   Implementada la lógica del método `guardarCambios` en el backend para persistir los movimientos individuales en la tabla `stock_animals`.
+    *   Los movimientos se asocian a una `DeclaracionStock` existente o nueva, manteniéndola en estado `en_progreso` (`productor_id`, `periodo_id`, `fecha_declaracion`, `estado`).
+    *   Mapeo de "altas" a `tipo_registro_id` 4 (Compra) y "bajas" a `tipo_registro_id` 6 (Venta).
+    *   Comunicación entre componentes (RegistroMovimientos y ResumenDeclaracion) mediante eventos globales de Livewire (`movimiento-agregado`, `do-save`, `dispatch-items-for-saving`, `limpiar-resumen`) para un flujo de datos y acciones desacoplado.
+*   **Consistencia de Estilo (Botones):**
+    *   Ajuste del botón "Guardar Cambios en Cuaderno" para eliminar bordes redondeados y alinearlo con el estilo general de la aplicación (bordes duros).

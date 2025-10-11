@@ -1,0 +1,58 @@
+El plan más limpio (y profesional) es este:
+
+🔹 1. Definir tabla clima
+
+Guardar el resultado crudo (JSON) de la API junto con la localidad y la hora.
+Así no dependés de la API en cada request del usuario.
+
+CREATE TABLE clima (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    localidad_id BIGINT NOT NULL,
+    datos_json JSON NOT NULL,
+    fecha_hora_consulta DATETIME NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+🔹 2. Crear un Comando Artisan
+
+Ejemplo: php artisan make:command ActualizarClima
+
+Este comando recorre las 27 localidades.
+
+Llama a la API de OpenWeather con la apiKey y coordenadas/localidad.
+
+Inserta cada respuesta en la tabla clima.
+
+🔹 3. Programar el Scheduler
+
+En app/Console/Kernel.php:
+
+protected function schedule(Schedule $schedule)
+{
+    // Actualiza cada 3 horas → 8 veces por día
+    $schedule->command('clima:actualizar')->everyThreeHours();
+}
+
+
+Esto genera como máximo 27 × 8 = 216 consultas por día, súper lejos del límite de 1000/día.
+
+🔹 4. Servir a los usuarios
+
+El widget no toca la API, solo busca en tu BD:
+
+SELECT * FROM clima 
+WHERE localidad_id = X 
+ORDER BY fecha_hora_consulta DESC 
+LIMIT 1;
+
+
+Si querés mostrar histórico → consultás más de un registro.
+
+🔹 5. Bonus
+
+Podés usar caché para evitar leer siempre la tabla.
+
+Si más adelante migrás a otra API (ej. SMN Argentina o un plan pago de OpenWeather), el sistema sigue igual, solo cambia la lógica del comando.
+
+👉 Con este flujo, tenés mínima carga en la API, datos centralizados y usuarios felices.
+Es escalable y limpio.

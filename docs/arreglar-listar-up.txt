@@ -1,0 +1,144 @@
+Por qué el admin funciona (puntos clave)
+
+Los modales están montados y disponibles — el layout/admin incluye el componente Livewire del modal (<livewire:admin.edit-productor-modal ... />), por lo que siempre existe una instancia en el DOM y puede abrirse desde cualquier parte mediante eventos/emit.
+
+Confirmación ligera con Alpine — el modal de confirmación (toggle estado) es un overlay Alpine simple dentro del mismo componente de lista. Ahí el @click="$wire.toggleProductorStatus(productorId)" funciona porque $wire referencia al componente Livewire que contiene esa tabla (mismo scope).
+
+Comunicación clara entre componentes — el listado usa wire:click="openEditModal({{ $productor->id }})" (llama a un método del componente padre) o emite eventos hacia el modal. En admin es consistente: componente listador ↔ modal Livewire (emit/emitTo / listeners).
+
+(Posible) forzado de remount con key=time() — incluiste :key="'edit-productor-modal-' . time()". Eso fuerza que el modal se remonte cada vez (resetea su estado). Puede servir si querés reiniciar el formulario siempre, pero no es lo ideal para mantener estado entre renders.
+
+Problemas típicos que tu panel productor está sufriendo (y por qué)
+
+Modal montado dentro de la pestaña → cuando cambias de tab el Livewire que contiene la pestaña puede ser destruido y al volver montarse pierde listeners/estado; si despachás eventos mientras no existe nada que los escuche, se pierden.
+
+Uso de $dispatch (CustomEvent) vs Livewire events: $dispatch crea eventos DOM; Livewire no los recibe automáticamente como listeners a menos que uses JS para transformar en Livewire.emit. Es más directo usar emitTo / $emit desde Livewire para comunicación entre componentes Livewire.
+
+Alpine root re-inicializado cuando Livewire re-renderiza la parte que contiene x-data — el estado Alpine se reinicia si ese nodo es reemplazado por Livewire.
+
+wire:key mal empleado (time()) → fuerza remount y puede esconder problemas en vez de solucionarlos.
+
+Qué copiar del admin (patrón recomendado)
+
+Montar los modales Livewire en un lugar estable que no sea destruido por re-renders de tabs: el layout del panel productor o el entrypoint (blade) que actúa como contenedor de tabs.
+
+Comunicar usando Livewire events: desde el listador usar $this->emitTo('componente-modal-alias','open', $id) o en Blade wire:click="$emitTo('componente-modal-alias','open', {{ $id }})".
+
+Modal Livewire escucha evento con $listeners y setea public $show = true + carga datos.
+
+Evitar time() en key salvo que quieras remount forzado; usar keys estables ('edit-productor-modal-'.$productor->id) cuando convenga.
+
+Mantener confirmaciones simples con Alpine si están en el mismo componente Livewire; si el confirm debe llamar a otro componente, usar Livewire.emit().
+
+Plan rápido para arreglar el panel productor (3 pasos concretos)
+Paso 1 — Elevar los modales a un contenedor estable
+
+En el entrypoint del productor (el blade que contiene x-data con las tabs) agregá los Livewire modales globales, por ejemplo justo antes del cierre </div> del entrypoint:
+
+{{-- entrypoint panel-productor.blade.php --}}
+@livewire('productor.unidades-productivas.ver-unidad-productiva')
+@livewire('productor.unidades-productivas.eliminar-unidad-productiva')
+
+
+Resultado: las instancias de modal existen siempre independientemente de qué pestaña esté activa.
+
+Paso 2 — Comunicación robusta: usar emitTo / listeners
+
+En la lista de unidades (la vista que mandaste), reemplazá los wire:click="$dispatch(...)" o @click="$dispatch(...)" por wire:click="$emitTo(...)" o por $this->emitTo(...) desde el backend. Ejemplo en la tabla:
+
+<!-- Antes: <button wire:click="$dispatch('verUnidadProductiva', { id: ... })"> -->
+<!-- Recomendado: -->
+<button wire:click="$emitTo('productor.unidades-productivas.ver-unidad-productiva', 'open', {{ $unidadProductiva->id }})"
+    class="text-indigo-600 hover:text-indigo-900" title="Ver detalles">
+    <!-- icon -->
+</button>
+
+<button wire:click="$emitTo('productor.unidades-productivas.eliminar-unidad-productiva', 'open', {{ $unidadProductiva->id }})"
+    class="text-red-600 hover:text-red-900" title="Eliminar unidad productiva">
+    <!-- icon -->
+</button>
+
+
+¿Por qué? emitTo envía un evento Livewire directamente al componente destino (por alias), sin depender del DOM ni de Alpine.
+
+Paso 3 — Modal Livewire: listener y show/close
+
+Ejemplo de componente Livewire VerUnidadProductiva (PHP):
+
+class VerUnidadProductiva extends \Livewire\Component
+{
+    public $show = false;
+    public $unidadId;
+    public $unidad; // datos cargados
+
+    protected $listeners = [
+        'open' => 'open', // escuchará emitTo('...','open', $id)
+        'close' => 'close'
+    ];
+
+    public function open($id)
+    {
+        $this->unidadId = $id;
+        $this->loadUnidad();
+        $this->show = true;
+    }
+
+    public function close()
+    {
+        $this->show = false;
+        $this->reset(['unidadId','unidad']);
+    }
+
+    protected function loadUnidad()
+    {
+        $this->unidad = UnidadProductiva::with('campo','otros')->find($this->unidadId);
+    }
+
+    public function render()
+    {
+        return view('livewire.productor.unidades-productivas.ver-unidad-productiva');
+    }
+}
+
+
+Y su Blade (simplificado):
+
+@if($show)
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-75">
+  <div class="bg-white rounded-lg shadow-xl p-6 max-w-2xl w-full">
+     <!-- contenido que usa $unidad -->
+     <button wire:click="close">Cerrar</button>
+  </div>
+</div>
+@endif
+
+
+Nota: usar $listeners = ['open' => 'open'] permite recibir emitTo('productor.unidades-productivas.ver-unidad-productiva','open', $id).
+
+Otras mejoras y recomendaciones prácticas (rápidas)
+
+wire:key: si montás el modal dentro de un loop o inyectás con props, usá keys estables ('edit-productor-modal-'.$productor->id) — no uses time() salvo que quieras forzar remount.
+
+Alpine + Livewire:
+
+Si el Alpine root no debe ser reemplazado por Livewire, podés usar wire:ignore.self en ese contenedor.
+
+Si necesitás sincronizar un tab entre Alpine y Livewire, usá @entangle('tab').
+
+Namespacing eventos: productor:ver:unidad o al menos productor.* para evitar colisiones con admin.
+
+Modal Manager (opcional a mediano plazo): en lugar de múltiples modales globales, crear un ModalShell global que reciba { component: 'productor.ver-unidad', payload: { id } } y renderice dinámicamente. Reduce DOM y centraliza las animaciones/estilos.
+
+Confirmaciones: si la confirmación (toggle status) está en Alpine y en el mismo componente Livewire donde existe $wire.toggle..., dejala así; si la confirmation debe llamar a modal en otro componente, pasar por Livewire.emit() o emitTo.
+
+Resumen práctico (lo que deberías aplicar ahora)
+
+Mover los modales del CRUD del productor al entrypoint (o layout) para que estén siempre montados.
+
+En la tabla, reemplazar dispatch DOM por wire:click="$emitTo('alias-del-modal','open', id)".
+
+Implementar en cada modal Livewire $listeners = ['open' => 'open'] y un método open($id) que cargue datos y ponga $show = true.
+
+Quitar time() del key salvo que realmente quieras remount forzado.
+
+Usar wire:key en filas/elementos cuando haga falta evitar mezcla de instancias.

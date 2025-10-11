@@ -1,0 +1,153 @@
+Alpine Expression Error: Unexpected token ';'
+
+Expression: "weatherWidget({ weatherCollection: [{"
+
+ <div class=​"border bg-white rounded-lg shadow-sm p-4 h-48 flex flex-col" x-data=​"weatherWidget({ weatherCollection:​ [{" location":"san mart\u00edn","temperature":"--","condition":"--","high":"--","low":"--","icon":"heroicon-o-exclamation-circle","iconcolor":"text-gray-400"}] })" x-init=​"initWidget()​">​…​</div>​flex
+handleError @ livewire.js?id=df3a17f2:1123Understand this warning
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: initWidget is not defined
+
+Expression: "initWidget()"
+
+ <div class=​"border bg-white rounded-lg shadow-sm p-4 h-48 flex flex-col" x-data=​"weatherWidget({ weatherCollection:​ [{" location":"san mart\u00edn","temperature":"--","condition":"--","high":"--","low":"--","icon":"heroicon-o-exclamation-circle","iconcolor":"text-gray-400"}] })" x-init=​"initWidget()​">​…​</div>​flex
+handleError @ livewire.js?id=df3a17f2:1123Understand this warning
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: allWeather is not defined
+
+Expression: "allWeather.length > 1"
+
+ <div class=​"relative" x-show=​"allWeather.length > 1" style=​"display:​ none;​">​…​</div>​
+handleError @ livewire.js?id=df3a17f2:1123Understand this warning
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: selectedMunicipioId is not defined
+
+Expression: "selectedMunicipioId"
+
+ <select x-model=​"selectedMunicipioId" class=​"block w-full pl-3 pr-8 py-1 text-sm border-gray-300 focus:​outline-none focus:​ring-indigo-500 focus:​border-indigo-500 rounded-md">​…​</select>​
+handleError @ livewire.js?id=df3a17f2:1123Understand this warning
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: allWeather is not defined
+
+Expression: "allWeather"
+
+ <template x-for=​"weather in allWeather" :key=​"weather.id">​…​</template>​slot
+handleError @ livewire.js?id=df3a17f2:1123Understand this warning
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: allWeather is not defined
+
+Expression: "allWeather.length === 1"
+
+ <div x-show=​"allWeather.length === 1" style=​"display:​ none;​">​…​</div>​
+handleError @ livewire.js?id=df3a17f2:1123Understand this warning
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: currentWeather is not defined
+
+Expression: "currentWeather ? currentWeather.location : ''"
+
+ <p class=​"text-sm text-gray-600" x-text=​"currentWeather ? currentWeather.location :​ ''">​</p>​
+handleError @ livewire.js?id=df3a17f2:1123Understand this warning
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: currentWeather is not defined
+
+Expression: "currentWeather"
+
+ <template x-if=​"currentWeather">​…​</template>​
+handleError @ livewire.js?id=df3a17f2:1123Understand this warning
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: currentWeather is not defined
+
+Expression: "!currentWeather"
+
+ <template x-if=​"!currentWeather">​…​</template>​
+handleError @ livewire.js?id=df3a17f2:1123Understand this warning
+livewire.js?id=df3a17f2:1127 Uncaught SyntaxError: Unexpected token ';'
+    at new AsyncFunction (<anonymous>)
+    at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21)
+    at generateFunctionFromString (livewire.js?id=df3a17f2:1184:16)
+    at generateEvaluatorFromString (livewire.js?id=df3a17f2:1189:16)
+    at normalEvaluator (livewire.js?id=df3a17f2:1154:111)
+    at evaluateLater (livewire.js?id=df3a17f2:1144:12)
+    at evaluate (livewire.js?id=df3a17f2:1140:5)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3564:17)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+    at stopDeferring (livewire.js?id=df3a17f2:1286:7)Understand this error
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: initWidget is not defined
+    at [Alpine] initWidget() (eval at safeAsyncFunction (http://127.0.0.1:8000/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:16)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at evaluate (livewire.js?id=df3a17f2:1140:34)
+    at livewire.js?id=df3a17f2:3489:37
+    at Function.<anonymous> (livewire.js?id=df3a17f2:1909:58)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+    at stopDeferring (livewire.js?id=df3a17f2:1286:7)
+    at deferHandlingDirectives (livewire.js?id=df3a17f2:1289:5)
+    at initTree (livewire.js?id=df3a17f2:1479:5)Understand this error
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: allWeather is not defined
+    at [Alpine] allWeather.length > 1 (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3626:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)Understand this error
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: selectedMunicipioId is not defined
+    at [Alpine] selectedMunicipioId (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at getValue (livewire.js?id=df3a17f2:3353:7)
+    at livewire.js?id=df3a17f2:3410:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3409:5)Understand this error
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: allWeather is not defined
+    at [Alpine] allWeather (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at loop (livewire.js?id=df3a17f2:3655:5)
+    at livewire.js?id=df3a17f2:3642:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3642:5)Understand this error
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: allWeather is not defined
+    at [Alpine] allWeather.length === 1 (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3626:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)Understand this error
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: currentWeather is not defined
+    at [Alpine] currentWeather ? currentWeather.location : '' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3496:7
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)Understand this error
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: currentWeather is not defined
+    at [Alpine] currentWeather (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3856:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3856:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)Understand this error
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: currentWeather is not defined
+    at [Alpine] !currentWeather (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:33)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3856:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3856:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)Understand this error

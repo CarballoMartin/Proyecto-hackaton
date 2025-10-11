@@ -1,0 +1,59 @@
+# Diseño y Arquitectura: Cuaderno de Campo Unificado
+
+Este documento describe la arquitectura para la refactorización del Cuaderno de Campo hacia una interfaz unificada de página completa, reemplazando el enfoque anterior de panel + modal.
+
+## 1. Visión General
+
+El objetivo es crear una experiencia de "consola de control" o "espacio de trabajo" dedicado, donde toda la gestión del cuaderno de campo ocurra en una sola página con un layout de 3 paneles, mejorando el flujo de trabajo y la intuición del usuario.
+
+## 2. Estructura de Layout
+
+La interfaz se basará en un layout de página completa (`layouts.cuaderno`) con 3 secciones principales:
+
+### a. Barra Superior (Banner de Estado)
+Un banner fino y elegante en la parte superior de la página que muestra información crítica de un vistazo:
+- **Izquierda:** Un contador de tiempo restante para el cierre del ciclo de declaración actual.
+- **Centro:** El nombre del productor logueado.
+- **Derecha:** El nombre de la Unidad Productiva (UP) activa, acompañado de un indicador visual (ej. un LED verde) para confirmar que está seleccionada.
+
+### b. Panel Izquierdo (Navegación Principal)
+Una barra lateral fija a la izquierda que funcionará como el centro de navegación principal.
+- **Selector de Unidad Productiva:** En la parte superior, un menú desplegable para seleccionar la UP activa. Todas las acciones realizadas en la página afectarán a la UP seleccionada aquí.
+- **Menú de Acciones:** Una lista de las operaciones disponibles para la UP seleccionada:
+    - **Dashboard:** Vista principal con un resumen y estado general.
+    - **Registrar Movimientos:** Despliega un sub-menú para seleccionar la especie (Ovino, Caprino, etc.) a registrar.
+    - **Declaraciones Anteriores:** Historial de declaraciones completadas.
+    - **Reportes:** (Futuro) Sección para la generación de reportes.
+
+### c. Área Central (Contenido Dinámico)
+El panel más grande, cuyo contenido cambia según la selección en el panel izquierdo.
+- **Formulario de Entrada Única:** Al seleccionar una especie en "Registrar Movimientos", aquí aparecerá un formulario para añadir un único registro (categoría, raza, cantidad).
+- **Vistas de Datos:** Mostrará el dashboard, la lista de declaraciones, etc.
+
+### d. Panel Derecho (Resumen Interactivo / Contextual)
+Una barra lateral derecha cuyo contenido depende del contexto del área central.
+- **Resumen en Vivo:** Cuando se usa el formulario de "Registrar Movimientos", este panel acumulará las entradas añadidas en la sesión actual. Cada entrada será una fila que mostrará los detalles y tendrá un botón para ser eliminada antes del guardado final.
+- **Totales:** Mostrará un conteo total de animales que se actualiza en tiempo real.
+- **Información Adicional:** Podría mostrar detalles o gráficos en otras secciones como el Dashboard.
+
+## 3. Flujo de Trabajo (Registro de Movimientos)
+
+1.  El usuario selecciona la **UP** en el panel izquierdo.
+2.  El usuario selecciona **Registrar Movimientos** y luego una **Especie** (ej. "Ovino").
+3.  En el panel central, rellena el **formulario de entrada única** (ej. 20, ovejas, merino) y pulsa "Añadir".
+4.  La entrada aparece como una nueva fila en el **panel derecho (resumen)**. El formulario central se limpia.
+5.  El usuario repite los pasos 3-4 para todas las categorías que necesite. Puede eliminar entradas desde el panel de resumen.
+6.  Una vez finalizado, pulsa el botón **"Guardar Declaración Definitiva"**, que persiste todas las entradas del resumen en la base de datos.
+
+---
+
+## 4. Log de Avances
+
+### Sesión 04/09/2025
+- Se acordó refactorizar toda la sección "Cuaderno de Campo" a una nueva interfaz de página completa, abandonando el enfoque de panel + modal.
+- Se documentó la nueva arquitectura de 3 paneles (Navegación, Contenido, Resumen) y el nuevo flujo de trabajo en este archivo.
+- Se creó una nueva ruta dedicada: `cuaderno.workspace`.
+- Se creó un nuevo layout exclusivo para esta sección: `layouts.cuaderno.blade.php`.
+- Se creó el componente principal de página completa: `App\Livewire\Productor\Cuaderno\Workspace.php`.
+- Se maquetó la estructura visual de la nueva página, incluyendo el banner superior y los 3 paneles.
+- Se implementó la funcionalidad del selector de Unidad Productiva en la barra lateral izquierda. El cambio de selección recarga la página en el contexto de la nueva UP seleccionada.

@@ -1,0 +1,112 @@
+**17 de Septiembre de 2025 (Continuación)**
+
+*   **Funcionalidad Avanzada y Pruebas para Historial de Movimientos**
+    *   **Contexto:** Se retomó el trabajo sobre el historial de movimientos para añadir funcionalidades avanzadas, mejorar la experiencia de usuario y crear una base de pruebas unitarias que garantice la fiabilidad de la lógica.
+    *   **Filtros Avanzados:** Se implementaron con éxito nuevos filtros en la interfaz de historial, permitiendo al usuario filtrar no solo por fecha y campo, sino también por "Flujo" (Altas/Bajas) y por "Motivo específico" (Nacimiento, Venta, etc.).
+    *   **Resumen Interactivo en Modal:** Atendiendo al feedback del usuario, se eliminó la tabla de resumen estática y se reemplazó por una solución más limpia y funcional:
+        *   Se añadió un botón "Ver Resumen" en la barra de resultados.
+        *   Este botón abre un modal que contiene una tabla de resumen detallada y formateada.
+        *   El contenido de esta tabla de resumen es dinámico y refleja en todo momento los filtros aplicados por el usuario.
+        *   El modal incluye una nota informativa sobre el contenido de la futura exportación a PDF.
+    *   **Mejoras de UX y Corrección de Bugs:**
+        *   Se ajustó la paginación de la tabla de resultados de 15 a 10 elementos por página.
+        *   Se solucionó un bug que permitía descargar un PDF vacío antes de aplicar filtros. Ahora, el botón "Exportar a PDF" solo se activa después de realizar una consulta.
+        *   Se modificó la vista para que no muestre ningún resultado en la carga inicial, mostrando en su lugar un mensaje que invita al usuario a aplicar un filtro.
+    *   **Exportación a PDF Mejorada:** Se actualizó la plantilla del PDF (`historial-pdf.blade.php`) para que el documento exportado incluya:
+        *   La tabla de resumen detallada.
+        *   Gráficos de barras generados con HTML/CSS que representan visualmente el desglose de altas y bajas.
+    *   **Creación de Suite de Pruebas Unitarias:**
+        *   Se sentaron las bases para las pruebas unitarias de la lógica de negocio creando el archivo `tests/Unit/HistorialMovimientosAccionTest.php`.
+        *   Se configuró la infraestructura de testing necesaria, añadiendo el trait `HasFactory` y los archivos Factory correspondientes para 8 modelos (`Productor`, `UnidadProductiva`, `StockAnimal`, `Especie`, `CategoriaAnimal`, `Raza`, `TipoRegistro`, `MotivoMovimiento`).
+        *   Se implementó una suite con 6 tests que cubren todos los escenarios de filtrado.
+        *   **Estado:** 5 de los 6 tests pasan con éxito. Queda pendiente de resolver un bug en el test que verifica el filtro por rango de fechas.
+
+---
+**18 de Septiembre de 2025**
+
+*   **Implementación del Widget de Clima en Panel de Productor**
+    *   **Objetivo:** Reemplazar la maqueta del widget de clima en el panel del productor por un componente funcional que muestre el clima de todas las Unidades Productivas (UPs) del productor.
+    *   **Arquitectura:** Siguiendo el patrón del panel de administrador, se optó por un widget que consume datos de una API.
+        *   Se creó un nuevo endpoint `GET /api/productor/clima` protegido por autenticación.
+        *   Se creó el controlador `Api\ProductorClimaController` para manejar la lógica de obtener las UPs del productor autenticado y devolver los datos del clima de sus municipios.
+        *   Se refactorizó el Trait `ManagesWeatherData` para que sus métodos fueran públicos y reutilizables, centralizando la lógica.
+        *   Se hizo reutilizable el componente Blade `weather-widget.blade.php` añadiéndole una propiedad `endpoint`.
+    *   **Depuración Extensiva:** Se resolvió una cadena de errores 500 (`Internal Server Error`) en el nuevo endpoint, causados por:
+        *   Métodos privados en el Trait (`BadMethodCallException`).
+        *   Falta de importación de Facades (`Class "Log" not found`).
+        *   Errores de sintaxis por una operación de reemplazo fallida (`ParseError`).
+        *   Problemas con la caché de rutas de Laravel (`Target class does not exist`).
+    *   **Mejoras de UI/UX:**
+        *   Se aplicó un estilo de tarjeta con altura fija al widget para un diseño más compacto.
+        *   Se corrigió un aviso de accesibilidad añadiendo un `<label>` al desplegable de selección de municipio.
+    *   **Estado Actual:** El widget es completamente funcional. Consume datos de la API específica del productor y permite seleccionar entre las distintas ubicaciones si tiene más de una. 
+    *   **Pendiente:** Solucionar un problema de renderizado de color en el icono del sol, que se muestra en negro en lugar de amarillo. La tarea fue pospuesta por el usuario.
+
+---
+**19 de Septiembre de 2025**
+
+*   **Implementación de la Funcionalidad "Historial de Movimientos"**
+    *   **Objetivo:** Crear una interfaz para visualizar y filtrar el historial de movimientos de stock por períodos y unidades productivas, con capacidad de exportación a PDF.
+    *   **Diseño de Maqueta:** Se inició con una maqueta visual en `productor.cuaderno.historial` para definir la UI/UX, adaptando la estética al estilo del "Cuaderno de Campo".
+    *   **Lógica de Backend:**
+        *   Se creó la `Acción` `FiltrarMovimientosHistorialAction` para encapsular la lógica de consulta de movimientos de stock por rango de fechas y unidad productiva.
+        *   Se refactorizó el método `historial` en `CuadernoDeCampoController` para usar esta `Acción` y pasar los datos (períodos, unidades productivas, movimientos) a la vista.
+        *   Se confirmó la relación `DeclaracionStock` con `ConfiguracionActualizacion` para obtener las fechas de los períodos.
+    *   **Interfaz de Usuario (Frontend):**
+        *   Se implementó un sistema de filtros híbrido:
+            *   Desplegable "Filtro Rápido por Período" que rellena automáticamente los campos de fecha "Desde" y "Hasta".
+            *   Campos de fecha "Fecha Desde" y "Fecha Hasta" para un control granular del rango.
+            *   Filtro por "Unidad Productiva".
+        *   Se añadió lógica Alpine.js para la sincronización de fechas y para evitar rangos negativos (`fecha_hasta` no puede ser anterior a `fecha_desde`).
+        *   La tabla de movimientos ahora muestra datos reales y es paginada.
+
+*   **Funcionalidad de Exportación a PDF**
+    *   **Servicio:** Se creó `PdfExportService` (implementando `PdfExportServiceInterface`) para generar PDFs a partir de vistas Blade.
+    *   **Integración:** Se añadió el método `exportarHistorialPdf` en `CuadernoDeCampoController` para usar el servicio y exportar la vista del historial.
+    *   **Vista PDF:** Se creó `productor.cuaderno.historial-pdf.blade.php` para una renderización optimizada del PDF.
+    *   **Corrección de Bug de Loader:** Se solucionó el problema de la pantalla de carga que se quedaba congelada al exportar a PDF, añadiendo `target="_blank"` al enlace de exportación.
+
+*   **Mejoras de UI/UX en el Cuaderno de Campo**
+    *   **Animaciones de Colapso:** Se implementó `x-collapse` para transiciones suaves al expandir/contraer las tablas de movimientos y stock.
+    *   **Barra de Scroll Persistente:** Se cambió `overflow-y-auto` a `overflow-y-scroll` en el layout del cuaderno para evitar el "desfase" visual.
+    *   **Loader Global:** Se integró el loader global de la aplicación en el layout del cuaderno de campo.
+
+*   **Problemas Pendientes (a continuar en la próxima sesión)**
+    *   **Bug de Filtro de Fecha (Día Único):** Se detectó que el filtro de fecha no mostraba resultados para un solo día (ej. Fecha Desde = hoy, Fecha Hasta = hoy). Se ha aplicado una corrección inicial en `FiltrarMovimientosHistorialAction` para incluir el final del día en el filtro "Fecha Hasta". Pendiente de verificación.
+    *   **Mejoras de UI/UX en Filtros:**
+        *   Añadir un botón "Limpiar Filtros".
+        *   Mejorar la separación visual del "Filtro Rápido por Período".
+        *   Agrupar los períodos por año en el desplegable "Filtro Rápido" para mejorar la usabilidad a largo plazo.
+
+---
+**20 de Septiembre de 2025**
+
+*   **Resolución de Bugs y Cierre de Tareas Pendientes**
+    *   **Contexto:** Se dedicó la sesión a resolver los problemas pendientes identificados en el historial de movimientos y a estabilizar la suite de pruebas.
+    *   **Corrección de Bugs en Historial de Movimientos:**
+        *   **Solucionado - Bug de Filtro de Fecha (Día Único):** Se verificó y validó la corrección aplicada a `FiltrarMovimientosHistorialAction`. El filtro ahora funciona correctamente al seleccionar el mismo día en "Fecha Desde" y "Fecha Hasta".
+        *   **Solucionado - Bug en Test de Rango de Fechas:** Se corrigió el test unitario en `HistorialMovimientosAccionTest` que fallaba al verificar el filtro por rango de fechas. La suite de pruebas para esta funcionalidad ahora pasa en su totalidad.
+    *   **Mejoras de UI/UX en Filtros:**
+        *   Se implementaron las mejoras de usabilidad planificadas para la sección de filtros del historial.
+        *   Se añadió un botón "Limpiar Filtros" que resetea todos los campos del formulario.
+        *   Se mejoró la separación visual del "Filtro Rápido por Período".
+        *   Se agruparon los períodos por año en el desplegable, facilitando la navegación.
+    *   **Estabilización de la Suite de Pruebas:**
+        *   **Solucionado - Error `MissingAppKeyException`:** Se resolvió el problema de configuración que impedía la ejecución de las pruebas de autenticación. Se generó la `APP_KEY` para el entorno de testing, permitiendo que la suite de `AuthenticationTest` se ejecute y pase correctamente.
+
+*   **Estado Actual:** El módulo de "Historial de Movimientos" se considera completo y estable. La suite de pruebas principal ha sido desbloqueada y funciona como se esperaba.
+---
+**21 de Septiembre de 2025**
+
+*   **Implementación de Arquitectura de Historial de Stock y Gráfico de Evolución**
+    *   **Objetivo:** Reemplazar el gráfico estático de evolución de stock en el panel de estadísticas del productor por un componente funcional, robusto y preciso, basado en una nueva arquitectura de consulta histórica.
+    *   **Arquitectura (`StockHistoryService`):** Se tomó la decisión estratégica de no implementar la lógica directamente en el `EstadisticasService`. En su lugar, se creó un nuevo pilar arquitectónico: `app/Services/StockHistoryService.php`. Este servicio actúa como un "libro mayor" o "máquina del tiempo" para el inventario, centralizando toda la lógica de consulta histórica. Expone dos métodos clave:
+        *   `getStockAt(fecha)`: Calcula y devuelve el stock total exacto que un productor tenía en una fecha determinada del pasado.
+        *   `getEvolutionBetween(fechaDesde, fechaHasta)`: Utiliza el método anterior para construir una serie de datos que muestra la evolución del stock entre dos fechas.
+    *   **Desarrollo Guiado por Pruebas (TDD):** La implementación del `StockHistoryService` se validó mediante una suite de tests unitarios (`tests/Unit/StockHistoryServiceTest.php`). Este proceso fue iterativo y fundamental para garantizar la calidad del código:
+        *   Se crearon los `Factories` necesarios que faltaban, como `DeclaracionStockFactory` y `ConfiguracionActualizacionFactory`.
+        *   Se depuraron múltiples errores de configuración en el entorno de pruebas, relacionados con relaciones de base de datos (uso de tabla pivote), traits `HasFactory` faltantes y propiedades `fillable` incompletas en los modelos.
+        *   Se corrigió un error en las aserciones del propio test, que no calculaban correctamente el valor esperado según las fechas de los movimientos.
+        *   Al final del proceso, la suite de tests completa pasó con éxito, validando la lógica del servicio.
+    *   **Integración y Refactorización:** El `EstadisticasService` fue refactorizado para eliminar su lógica de cálculo de evolución y, en su lugar, inyectar y utilizar el nuevo `StockHistoryService`. Esto deja el código más limpio, desacoplado y alineado con los principios de responsabilidad única.
+    *   **Estado Actual:** La lógica para el gráfico de evolución de stock está completa, testeada e integrada. El panel de estadísticas del productor ahora muestra un gráfico real y preciso de la evolución de su inventario. El sistema cuenta con un servicio reutilizable y robusto para cualquier consulta histórica de stock futura.

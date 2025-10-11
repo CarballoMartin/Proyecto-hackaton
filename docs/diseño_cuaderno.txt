@@ -1,0 +1,136 @@
+# Decisiones de Diseño y Funcionalidad: Cuaderno de Campo
+
+Este documento registra las decisiones de diseño para la refactorización del Cuaderno de Campo.
+
+---
+
+### **1. Recordatorio de Período de Declaración**
+
+- **Decisión:** Se implementará un sistema de recordatorio de doble componente para informar sobre el cierre del período de declaración.
+- **Componente 1 (Panel Principal):** Se mostrará un banner o tarjeta de aviso prominente en el panel principal del productor. Este aviso será de alta visibilidad e informará de la cercanía de la fecha límite, con un enlace directo al Cuaderno de Campo.
+- **Componente 2 (Cuaderno de Campo):** Dentro de la sección "Cuaderno de Campo", se mostrará un contador detallado en tiempo real (días, horas, minutos) para que el usuario vea el tiempo exacto restante mientras trabaja en su declaración.
+
+---
+
+### **2. Explicación del Sistema de "Fichas"**
+
+- **Decisión:** Educar al usuario sobre el nuevo concepto de "Ficha de Declaración" de forma integrada en el flujo de bienvenida del Cuaderno de Campo.
+- **Implementación:** Añadir un nuevo paso al asistente de bienvenida (onboarding wizard) existente.
+- **Contenido del Paso:** El nuevo paso explicará en lenguaje sencillo el funcionamiento de la ficha:
+    - Todos los registros (altas/bajas) se agrupan en una "ficha" para el período actual.
+    - La ficha funciona como un **borrador editable**: el productor puede añadir, modificar y eliminar registros libremente.
+    - Una vez que el productor **finaliza y guarda** la declaración, esta se bloquea y ya no se puede modificar.
+    - El historial de declaraciones finalizadas se podrá consultar en la sección de **Reportes**.
+    - El stock consolidado se podrá ver en la sección de **Stock**.
+
+---
+
+### **3. Flujo Centrado en la Unidad Productiva (UP)**
+
+- **Decisión:** El Cuaderno de Campo estará organizado por Unidad Productiva. La selección de la UP será el primer paso del flujo.
+- **Implementación:**
+    1.  La vista principal del Cuaderno mostrará al productor una lista de sus UPs.
+    2.  Junto a cada UP, se indicará el estado de su "Ficha" para el período actual (ej: "Sin Iniciar", "En Progreso", "Completada").
+    3.  El productor debe seleccionar una UP para poder acceder a los botones de "Altas" y "Bajas".
+    4.  **Caso especial:** Si el productor posee una única UP, el sistema la pre-seleccionará automáticamente.
+- **Feedback Visual Constante:** Una vez seleccionada una UP, la interfaz mostrará un **elemento visual persistente** (como un encabezado o una "miga de pan") que le recuerde siempre en qué finca está trabajando (ej: `Estás trabajando en: Finca "La Esperanza"`).
+- **Impacto:** Esta decisión redefine el flujo. La "Ficha de Declaración" estará siempre asociada a una UP específica.
+
+---
+
+### **4. Espacio de Trabajo Interactivo ("Carrusel Híbrido")**
+
+- **Decisión:** Para facilitar la carga de múltiples registros de distintos tipos, se creará un "Espacio de Trabajo" a pantalla completa, combinando la navegación de un carrusel con la accesibilidad de las pestañas.
+- **Implementación:**
+    1. **Navegación Híbrida:** El usuario podrá moverse entre los formularios (Declaración Inicial, Nacimiento, Compra, Venta, Muerte, etc.) usando flechas laterales para un flujo secuencial, o haciendo clic en pestañas/títulos en la parte superior para un acceso directo.
+    2. **Resumen en Vivo:** Un panel lateral (sidebar) dentro de este espacio de trabajo mostrará una lista de todos los registros que se han añadido en la sesión actual, actualizándose en tiempo real con cada guardado.
+    3. **Formularios Inteligentes:** Los formularios recordarán valores comunes del último registro guardado (como la `especie` o la `fecha`) para minimizar la entrada de datos repetitiva.
+    4. **Lógica Condicional:** El espacio de trabajo será inteligente. Si es el primer registro de una UP, las pestañas de "Bajas" (Venta, Muerte) estarán desactivadas hasta que se cargue una "Declaración Inicial".
+- **Impacto:** Esta decisión reemplaza la idea de un modal simple por acción y define la experiencia central de la carga de datos.
+
+---
+
+### **5. Formulario de "Declaración Inicial"**
+
+- **Decisión:** Este formulario permitirá al productor registrar todas las categorías de animales que posee en una sola operación.
+- **Implementación:** Será un formulario dinámico donde el productor podrá **"Añadir Fila"** por cada categoría de animal que tenga.
+- **Campos por cada Fila:**
+    1.  `Especie` (Selector: Ovino/Caprino).
+    2.  `Categoría` (Selector dependiente de la especie).
+    3.  `Cantidad` (Campo numérico).
+    4.  `Observaciones` (Opcional).
+- **Comportamiento:** El productor podrá añadir tantas filas como necesite. Al guardar, se crearán todos los registros de stock de una sola vez, asociados a la ficha.
+
+---
+
+### **6. Formulario de "Registrar Compra"**
+
+- **Decisión:** Definir los campos necesarios para registrar la compra de animales.
+- **Campos del Formulario:**
+    1.  `Especie` (Selector: Ovino/Caprino).
+    2.  `Categoría` (Selector dependiente).
+    3.  `Cantidad` (Numérico).
+    4.  `Fecha de Compra` (Selector de fecha).
+    5.  `Origen` (Campo de texto para CUIT, RSPA o nombre del vendedor).
+    6.  `Observaciones` (Opcional).
+
+---
+
+### **7. Formularios de "Registrar Venta" y "Registrar Muerte"**
+
+- **Decisión:** Definir los campos para los formularios de bajas de animales.
+
+- **Formulario "Registrar Venta":**
+    - **Especie:** (Selector) - Ovino / Caprino.
+    - **Categoría:** (Selector) - Dependiente de la especie.
+    - **Cantidad:** (Numérico).
+    - **Fecha de Venta:** (Selector de Fecha).
+    - **Destino:** (Texto) - Para registrar el CUIT, RSPA, o nombre del comprador/feria.
+    - **Observaciones:** (Área de texto, opcional).
+
+- **Formulario "Registrar Muerte":**
+    - **Especie:** (Selector) - Ovino / Caprino.
+    - **Categoría:** (Selector) - Dependiente de la especie.
+    - **Cantidad:** (Numérico).
+    - **Fecha de Muerte:** (Selector de Fecha).
+    - **Causa:** (Selector) - Con opciones como "Enfermedad", "Depredador", "Accidente", "Vejez", "Otra".
+    - **Observaciones:** (Área de texto, opcional).
+
+---
+---
+
+## Log de Avances - Sesión 31/08/2025
+
+Se implementó la estructura base del "Cuaderno de Campo" y se corrigieron múltiples errores de integración y de base de datos hasta dejar la vista principal funcional.
+
+### Archivos Creados
+
+-   **`app/Livewire/Productor/Cuaderno/EspacioDeTrabajo.php`**: Componente Livewire para gestionar el modal/vista de altas y bajas.
+-   **`resources/views/livewire/productor/cuaderno/espacio-de-trabajo.blade.php`**: Vista Blade para el "Espacio de Trabajo", incluyendo la navegación por pestañas y el panel de resumen.
+-   **`app/Livewire/Productor/Cuaderno/Forms/DeclaracionInicialForm.php`**: Componente Livewire para el formulario de declaración inicial.
+-   **`resources/views/livewire/productor/cuaderno/forms/declaracion-inicial-form.blade.php`**: Vista Blade para el formulario de declaración inicial (aún no integrado en el Espacio de Trabajo).
+
+### Archivos Modificados
+
+-   **`app/Livewire/Productor/Cuaderno/CuadernoDeCampoPanel.php`**:
+    -   Se implementó la lógica completa para cargar, mostrar y seleccionar las Unidades Productivas (UPs) del productor.
+    -   Se añadió la lógica para abrir el "Espacio de Trabajo".
+    -   Se corrigió el método de renderizado para usar el layout `layouts.app` a través de atributos, solucionando un problema de página en blanco.
+    -   Se corrigió un bug que buscaba `user_id` en lugar de `usuario_id` en la tabla `productors`.
+
+-   **`resources/views/livewire/productor/cuaderno/cuaderno-de-campo-panel.blade.php`**:
+    -   Se reescribió completamente la vista para implementar el flujo de selección de UP, basándose en el diseño de React.
+    -   Se corrigió un error crítico de JavaScript en Alpine.js, implementando la lógica de `localStorage` para el tutorial de bienvenida y evitando el fallo de la página.
+    -   Se corrigió un bug de `sum() on null` al mostrar el total de animales, usando el nombre de relación correcto (`stockAnimales`) y el operador null-safe (`?->`).
+
+-   **`resources/views/livewire/productor/productor-panel.blade.php`**:
+    -   Se añadió `'cuaderno-de-campo'` a la lista de pestañas válidas en el `x-init` de Alpine.js, solucionando el problema de navegación que impedía mostrar el componente.
+
+-   **`app/Models/UnidadProductiva.php`**:
+    -   Se añadió la relación `hasMany` llamada `declaraciones()` para poder acceder a las declaraciones de una UP.
+
+-   **`database/migrations/500007_create_declaraciones_stock_table.php`**:
+    -   Se añadió la columna `unidad_productiva_id` para vincular de forma directa una declaración a una UP.
+
+-   **`database/seeders/StockAnimalSeeder.php`**:
+    -   Se actualizó el seeder para que incluya la `unidad_productiva_id` al crear datos de prueba, evitando errores al ejecutar `migrate:fresh --seed`.

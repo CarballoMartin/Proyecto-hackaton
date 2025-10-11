@@ -1,0 +1,29 @@
+Plan de Trabajo - Cuaderno de Campo: Transformación de Tabla de Movimientos
+
+Objetivo: Convertir la primera tabla de la vista 'registro' del Cuaderno de Campo en un resumen dinámico de los movimientos pendientes de guardar, incorporando funcionalidades avanzadas.
+
+Pasos Pendientes:
+
+1.  **Modificación de la Tabla Principal (Vista 'registro.blade.php'):*
+        **La tabla mostrara los movimientos del ultimo periodo pudiendose distinguir entre los guardados y los pendientes(color gris y con posibilidad de borrar antes de guardar)
+    *   **Fuente de Datos:** La tabla ahora mostrará los movimientos almacenados temporalmente en `$store.cuaderno.summary.items`.
+    *   **Nuevas Columnas:**
+        *   "Tipo" (Alta/Baja): Mostrará el tipo de movimiento con estilo de color (verde para alta, rojo para baja).
+        *   "Motivo": Mostrará el nombre del motivo específico del movimiento (ej. Nacimiento, Venta, Traslado (Entrada)).
+        *   "Día": Mostrará el día de la semana en que se registró el movimiento.
+        *   "Acciones": Incluirá un botón "Eliminar" para cada movimiento, permitiendo quitarlo de la lista de pendientes.
+    *   **Filtro por Día:**
+        *   Se añadirá un selector (dropdown) para filtrar los movimientos por día de la semana.
+        *   El selector permitirá elegir un día específico o "Todos" los días.
+        *   La tabla se actualizará dinámicamente según el filtro seleccionado. NOTA: el filtro debe partir de la cabecera de la tabla
+
+2.  **Lógica de Alpine.js (Vista 'registro.blade.php'):**
+    *   **Propiedades:** Añadir `dayFilter: 'todos'` y `dayNames: [...]` al objeto de datos de Alpine.
+    *   **Propiedades Computadas:**
+        *   `daysWithMovements`: Para generar dinámicamente las opciones del filtro de días a partir de los movimientos existentes.
+        *   `filteredMovements`: Para aplicar el filtro de días a la lista de movimientos antes de mostrarlos en la tabla.
+    *   **Función `addMovement()`:** Ya se ha modificado para incluir `createdAt: new Date()` y `motivo_nombre`.
+
+3.  **Desactivación Temporal:** La tabla de "Stock Total (la segunda tabla) se comentará temporalmente para enfocar el desarrollo en esta nueva funcionalidad.
+
+Este plan se ejecutará en pasos incrementales para asegurar la estabilidad.

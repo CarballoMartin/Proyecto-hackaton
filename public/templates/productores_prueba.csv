@@ -1,0 +1,26 @@
+"apellido y nombre",dni,email,municipio,telefono,latitud,longitud,rnspa,activo
+"Juan Perez",30123456,"juan.perez@example.com","Apóstoles",3754123456,-27.915,-55.76,123456789,1
+"Maria Garcia",31987654,"maria.garcia@example.com","Concepción de la Sierra",3754987654,-27.983,-55.52,234567890,1
+"Carlos Rodriguez",29876543,"carlos.rodriguez@example.com","San José",3754876543,-27.771,-55.78,345678901,1
+"Ana Martinez",32345678,"ana.martinez@example.com","Azara",3754345678,-28.06,-55.67,456789012,1
+"Luis Fernandez",28765432,"luis.fernandez@example.com","Tres Capones",3754765432,-27.96,-55.6,567890123,1
+"Sofia Lopez",33456789,"sofia.lopez@example.com","Apóstoles",3754456789,-27.89,-55.75,678901234,1
+"Javier Gonzalez",27654321,"javier.gonzalez@example.com","Concepción de la Sierra",3754654321,-27.99,-55.5,789012345,1
+"Valentina Sanchez",34567890,"valentina.sanchez@example.com","San José",3754567890,-27.76,-55.79,890123456,1
+"Matias Ramirez",26543210,"matias.ramirez@example.com","Azara",3754543210,-28.05,-55.68,901234567,1
+"Camila Torres",35678901,"camila.torres@example.com","Tres Capones",3754678901,-27.97,-55.61,123456780,1
+"Andres Flores",25432109,"andres.flores@example.com","Apóstoles",3754432109,-27.9,-55.74,234567891,1
+"Lucia Gomez",36789012,"lucia.gomez@example.com","Concepción de la Sierra",3754789012,-27.97,-55.53,345678902,1
+"Facundo Diaz",24321098,"facundo.diaz@example.com","San José",3754321098,-27.78,-55.77,456789013,1
+"Agustina Benitez",37890123,"agustina.benitez@example.com","Azara",3754890123,-28.07,-55.66,567890124,1
+"Martin Acosta",23210987,"martin.acosta@example.com","Tres Capones",3754210987,-27.95,-55.62,678901235,1
+"Abril Suarez",38901234,"abril.suarez@example.com","Apóstoles",3754901234,-27.92,-55.77,789012346,1
+"Nicolas Romero",22109876,"nicolas.romero@example.com","Concepción de la Sierra",3754109876,-27.96,-55.51,890123457,1
+"Renata Ruiz",39012345,"renata.ruiz@example.com","San José",3754012345,-27.75,-55.8,901234568,1
+"Thiago Vega",21098765,"thiago.vega@example.com","Azara",3754987654,-28.04,-55.69,123456789,1
+"Victoria Castillo",40123456,"victoria.castillo@example.com","Tres Capones",3754123456,-27.98,-55.59,234567890,1
+"Bautista Gimenez",20987654,"bautista.gimenez@example.com","Apóstoles",3754876543,-27.88,-55.76,345678901,1
+"Martina Molina",41234567,"martina.molina@example.com","Concepción de la Sierra",3754345678,-28.0,-55.54,456789012,1
+"Santino Rios",19876543,"santino.rios@example.com","San José",3754765432,-27.79,-55.76,567890123,1
+"Catalina Ortiz",42345678,"catalina.ortiz@example.com","Azara",3754456789,-28.08,-55.65,678901234,1
+"Geronimo Silva",18765432,"geronimo.silva@example.com","Tres Capones",3754654321,-27.94,-55.63,789012345,1

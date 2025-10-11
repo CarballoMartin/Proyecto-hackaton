@@ -1,0 +1,33 @@
+📋 Qué necesito de tu lado en el documento
+
+Para poder ayudarte a armar la base del proyecto Android, lo más útil sería que el documento tenga:
+
+Entidades y datos a registrar en la app
+
+Ej: stock ovino, stock caprino, nacimientos, bajas, ventas, tratamientos, etc.
+
+Campos principales de cada registro (fecha, cantidad, notas, fotos, etc.).
+
+Flujos de uso
+
+¿Qué hace un productor desde el celular?
+
+Ejemplo: “Ingreso → selecciona su campo → agrega registro de nacimientos → guarda”.
+
+Prioridades
+
+Qué funciones deben estar sí o sí en la primera versión.
+
+Qué funciones se pueden dejar para más adelante.
+
+Consideraciones offline
+
+Qué datos deben estar disponibles sin conexión (ej: su stock histórico).
+
+Qué cosas pueden esperar a tener internet (ej: reportes globales).
+
+Interfaz mínima
+
+¿Querés que empecemos con algo súper simple (formularios básicos y listas)?
+
+¿O ya tenés en mente un diseño más amigable (colores, íconos, estilo tipo agenda)?

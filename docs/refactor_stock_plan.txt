@@ -1,0 +1,27 @@
+Plan de Refactorización para la Vista de Stock del Productor
+
+Objetivo: Mejorar la claridad, simplicidad y comunicación visual de la vista de stock para un productor no tecnológico, basándose en un modelo de datos de trazabilidad histórica.
+
+---
+Paso 1: Modificar el Componente Livewire (app/Livewire/Productor/Stock/ListarStock.php)
+
+- [ ] Crear una nueva propiedad pública `$stock_agrupado = [];`.
+- [ ] En el método `mount()`, después de obtener `$this->stock_animals`, agrupar la colección por el nombre de la especie y asignar el resultado a `$this->stock_agrupado`. La clave del array será el nombre de la especie (ej: "Ovino") y el valor será una colección de los registros de stock para esa especie.
+- [ ] Eliminar el listener de eventos `#[On('stockEliminado')]`, ya que la acción de eliminar no existirá más.
+
+---
+Paso 2: Modificar la Vista Blade (resources/views/livewire/productor/stock/listar-stock.blade.php)
+
+- [ ] Eliminar las llamadas a los componentes Livewire para los modales: `@livewire('productor.stock.ver-stock')` y `@livewire('productor.stock.eliminar-stock')`.
+- [ ] Reemplazar el botón "Agregar Animal al Stock" por un bloque de texto informativo que dirija al usuario al "Cuaderno de Campo" para registrar nuevas entradas de stock.
+- [ ] Eliminar completamente la tabla `<table>` existente.
+- [ ] Implementar una nueva estructura de renderizado:
+    - Iniciar un bucle `@foreach ($stock_agrupado as $nombreEspecie => $registros)`.
+    - Dentro del bucle, mostrar un encabezado de sección para cada especie (ej: "OVINOS"), utilizando un diseño limpio y un icono de Heroicons apropiado.
+    - Crear una nueva tabla para los registros de esa especie.
+    - Las columnas de la tabla serán: Periodo, Categoría, Raza, Cantidad, Acciones.
+    - Las acciones serán botones con solo iconos de Heroicons (y tooltips):
+        - "Ver Evolución": Usar el icono `chart-bar`.
+        - "Ver Ficha": Usar el icono `document-text`.
+        - "Imprimir": Usar el icono `printer`.
+- [ ] Actualizar el mensaje de "estado vacío" para que refleje la nueva forma de agregar datos a través del Cuaderno de Campo.
