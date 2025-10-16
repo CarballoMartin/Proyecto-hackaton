@@ -20,6 +20,9 @@
 
     <x-modals.productor-perfil />
     <x-modals.activity-log-modal />
+    
+    {{-- Modal de Ecoganadería --}}
+    <x-modals.ecoganaderia-modal />
 
 </x-panel-layout>
 </x-app-layout>

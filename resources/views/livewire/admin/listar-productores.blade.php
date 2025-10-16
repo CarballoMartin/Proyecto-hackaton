@@ -48,16 +48,28 @@
                                             {{ $productor->municipio}}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-                                            <a href="#" class="inline-flex items-center text-blue-600 hover:text-blue-800"
-                                                title="Ver unidades productivas en el mapa">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-                                                    viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5s-3 1.343-3 3 1.343 3 3 3z" />
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M12 22s8-4.5 8-10a8 8 0 10-16 0c0 5.5 8 10 8 10z" />
-                                                </svg>
-                                            </a>
+                                            @if($productor->unidadesProductivas && $productor->unidadesProductivas->count() > 0)
+                                                <a href="{{ route('admin.mapa') }}?productor={{ $productor->id }}" 
+                                                   class="inline-flex items-center text-blue-600 hover:text-blue-800"
+                                                   title="Ver {{ $productor->unidadesProductivas->count() }} UP en el mapa">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                                        viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5s-3 1.343-3 3 1.343 3 3 3z" />
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            d="M12 22s8-4.5 8-10a8 8 0 10-16 0c0 5.5 8 10 8 10z" />
+                                                    </svg>
+                                                    <span class="ml-1 text-xs">{{ $productor->unidadesProductivas->count() }}</span>
+                                                </a>
+                                            @else
+                                                <span class="inline-flex items-center text-gray-400" title="Sin UPs registradas">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                                        viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                                                    </svg>
+                                                </span>
+                                            @endif
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <button @click="confirmar = true; productorId = {{ $productor->id }}"

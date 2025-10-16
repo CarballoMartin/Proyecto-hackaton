@@ -10,7 +10,9 @@ use App\Models\Productor;
 use App\Models\Institucion;
 use App\Models\SolicitudVerificacion;
 use App\Models\Campo;
+use App\Models\UnidadProductiva;
 use App\Services\EstadisticasService;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
@@ -27,14 +29,14 @@ class AdminController extends Controller
         $totalProductores = Productor::count();
         $totalInstituciones = Institucion::count();
         $solicitudesPendientes = SolicitudVerificacion::where('estado', 'pendiente')->count();
-        $totalCampos = Campo::count();
+        $totalUnidadesProductivas = \App\Models\UnidadProductiva::count();
 
         // Pasar los datos a la vista
         return view('admin.panel', [
             'totalProductores' => $totalProductores,
             'totalInstituciones' => $totalInstituciones,
             'solicitudesPendientes' => $solicitudesPendientes,
-            'totalCampos' => $totalCampos,
+            'totalUnidadesProductivas' => $totalUnidadesProductivas,
         ]);
     }
 
@@ -47,11 +49,36 @@ class AdminController extends Controller
     {
         // Obtener KPIs globales desde el servicio
         $stats = $estadisticasService->getKpisGlobales();
+        
+        // Obtener datos reales para los gráficos
+        $productoresPorMunicipio = Productor::select('municipio', DB::raw('count(*) as total'))
+            ->groupBy('municipio')
+            ->orderBy('total', 'desc')
+            ->limit(5) // Top 5 municipios
+            ->get();
+            
+        $composicionGanadera = DB::table('stock_animals')
+            ->join('especies', 'stock_animals.especie_id', '=', 'especies.id')
+            ->select('especies.nombre', DB::raw('SUM(stock_animals.cantidad) as total'))
+            ->groupBy('especies.nombre')
+            ->get();
 
-        $mapMarkers = [
-            ['lat' => -27.36, 'lng' => -55.89, 'popup' => '<b>Productor:</b> Juan Perez<br><b>Animales:</b> 150'],
-            ['lat' => -27.78, 'lng' => -55.32, 'popup' => '<b>Productor:</b> Maria Gomez<br><b>Animales:</b> 80'],
-        ];
+        // Obtener marcadores reales de las Unidades Productivas
+        $mapMarkers = UnidadProductiva::with('productores')
+            ->whereNotNull('latitud')
+            ->whereNotNull('longitud')
+            ->get()
+            ->map(function ($up) {
+                $productoresNombres = $up->productores->pluck('nombre')->join(', ') ?: 'Sin productor';
+                $superficie = $up->superficie ? number_format($up->superficie, 2) . ' ha' : 'N/A';
+                
+                return [
+                    'lat' => (float) $up->latitud,
+                    'lng' => (float) $up->longitud,
+                    'popup' => "<b>UP:</b> {$up->rnspa}<br><b>Productor(es):</b> {$productoresNombres}<br><b>Superficie:</b> {$superficie}"
+                ];
+            })
+            ->toArray();
 
         $activityItems = [
             ['icon' => 'heroicon-s-user-plus', 'text' => 'Nuevo productor registrado: Juan Perez', 'time' => 'hace 5 minutos'],
@@ -91,6 +118,8 @@ class AdminController extends Controller
             'pendingRequests' => $pendingRequests,
             'weatherData' => $weatherData,
             'newsItems' => $newsItems,
+            'productoresPorMunicipio' => $productoresPorMunicipio,
+            'composicionGanadera' => $composicionGanadera,
         ]);
     }
 }

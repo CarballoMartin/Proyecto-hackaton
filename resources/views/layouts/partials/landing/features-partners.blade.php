@@ -6,7 +6,7 @@
                 Una Plataforma Robusta con Respaldo Institucional
             </h2>
             <p class="mt-4 text-lg text-gray-600">
-                Desarrollado en colaboración con los actores clave de la cuenca para garantizar una herramienta útil y
+                Desarrollado en colaboración con instituciones y productores para garantizar una herramienta útil y
                 eficaz.
             </p>
         </div>
@@ -22,37 +22,41 @@
             <ul x-ref="logos"
                 class="flex items-center justify-center md:justify-start [&_li]:mx-8 animate-infinite-scroll">
 
-                <!-- Logo 1: Contenedor fijo, imagen flexible -->
+                <!-- Logo 1: Instituto Tecnológico -->
                 <li class="flex justify-center items-center w-40 h-16">
-                    <img src="{{ asset('logos/inta1.png') }}" alt="INTA" class="max-h-full max-w-full
+                    <img src="{{ asset('logos/logo-instituciones.svg') }}" alt="Instituto Tecnológico" class="max-h-full max-w-full
       object-contain grayscale hover:grayscale-0 transition duration-300" />
                 </li>
 
-                <!-- Logo 2 -->
+                <!-- Logo 2: Universidad -->
                 <li class="flex justify-center items-center w-40 h-16">
-                    <img src="{{ asset('logos/logo SRM.jpg') }}" alt="srm" class="max-h-full
+                    <img src="{{ asset('logos/logo-universidad.svg') }}" alt="Universidad" class="max-h-full
       max-w-full object-contain grayscale hover:grayscale-0 transition duration-300" />
                 </li>
 
-                <!-- Logo 3 -->
+                <!-- Logo 3: Cooperativa -->
                 <li class="flex justify-center items-center w-40 h-16">
-                    <img src="{{ asset('logos/todostenemos.jpg') }}" alt="fundaciontodostenemos" class="max-h-full
+                    <img src="{{ asset('logos/logo-cooperativa.svg') }}" alt="Cooperativa" class="max-h-full
       max-w-full object-contain grayscale hover:grayscale-0 transition duration-300" />
                 </li>
 
-                <!-- Logo 4 -->
+                <!-- Logo 4: Ministerio -->
                 <li class="flex justify-center items-center w-40 h-16">
-                    <img src="{{ asset('logos/unam.jpg') }}" alt="unam" class="max-h-full
+                    <img src="{{ asset('logos/logo-ministerio.svg') }}" alt="Ministerio" class="max-h-full
       max-w-full object-contain grayscale hover:grayscale-0 transition duration-300" />
                 </li>
 
-                <!-- Logo 5 -->
+                <!-- Logo 5: Sistema -->
                 <li class="flex justify-center items-center w-40 h-16">
-                    <img src="{{ asset('logos/municipios/candelaria.png') }}" alt="candelaria" class="max-h-full
+                    <img src="{{ asset('logos/logo-sistema.svg') }}" alt="Sistema" class="max-h-full
       max-w-full object-contain grayscale hover:grayscale-0 transition duration-300" />
                 </li>
 
-                <!-- (Opcional) Repite los logos si tienes menos de 5 o 6 para que el bucle se vea fluido -->
+                <!-- Logo 6: Placeholder -->
+                <li class="flex justify-center items-center w-40 h-16">
+                    <img src="{{ asset('logos/logo-placeholder.svg') }}" alt="Institución" class="max-h-full
+      max-w-full object-contain grayscale hover:grayscale-0 transition duration-300" />
+                </li>
 
             </ul>
         </div>

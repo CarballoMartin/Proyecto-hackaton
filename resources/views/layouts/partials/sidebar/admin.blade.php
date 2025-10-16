@@ -58,7 +58,7 @@
     <div class="mt-8">
         <h3 class="px-4 text-xs text-gray-500 uppercase tracking-wider font-semibold">Herramientas</h3>
         <div class="mt-4 space-y-1">
-            <a href="#" class="flex items-center px-4 py-2 text-sm font-medium rounded-md text-gray-400 cursor-not-allowed">
+            <a href="{{ route('admin.mapa') }}" class="flex items-center px-4 py-2 text-sm font-medium rounded-md {{ request()->routeIs('admin.mapa') ? 'bg-gray-200 text-gray-900' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
                 <x-heroicon-o-map class="w-6 h-6 mr-3" />
                 Geolocalización
             </a>

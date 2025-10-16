@@ -118,10 +118,10 @@
                 <div class="bg-white rounded-lg shadow p-6">
                     <h3 class="text-lg font-medium text-gray-900 mb-4">Acciones Rápidas</h3>
                     <ul class="space-y-3">
-                        <li><a href="#" class="flex items-center p-3 rounded-md text-gray-700 bg-gray-50 hover:bg-gray-100 transition-colors">- Invitar nuevo participante</a></li>
-                        <li><a href="#" class="flex items-center p-3 rounded-md text-gray-700 bg-gray-50 hover:bg-gray-100 transition-colors">- Generar Reporte General</a></li>
-                        <li><a href="#" class="flex items-center p-3 rounded-md text-gray-700 bg-gray-50 hover:bg-gray-100 transition-colors">- Ver mapa de productores</a></li>
-                        <li><a href="#" class="flex items-center p-3 rounded-md text-gray-700 bg-gray-50 hover:bg-gray-100 transition-colors">- Editar datos de la institución</a></li>
+                        <li><a href="{{ route('institucional.participantes') }}" class="flex items-center p-3 rounded-md text-gray-700 bg-gray-50 hover:bg-gray-100 transition-colors">- Invitar nuevo participante</a></li>
+                        <li><a href="{{ route('institucional.reportes') }}" class="flex items-center p-3 rounded-md text-gray-700 bg-gray-50 hover:bg-gray-100 transition-colors">- Generar Reporte General</a></li>
+                        <li><a href="{{ route('institucional.mapa') }}" class="flex items-center p-3 rounded-md text-gray-700 bg-gray-50 hover:bg-gray-100 transition-colors">- Ver mapa de productores</a></li>
+                        <li><a href="{{ route('institucional.configuracion') }}" class="flex items-center p-3 rounded-md text-gray-700 bg-gray-50 hover:bg-gray-100 transition-colors">- Editar datos de la institución</a></li>
                     </ul>
                 </div>
 

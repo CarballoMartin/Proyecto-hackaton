@@ -1,13 +1,19 @@
 {
   "resources/css/app.css": {
-    "file": "assets/app-BK__DtBp.css",
+    "file": "assets/app-Dplfk4Yv.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },
   "resources/js/app.js": {
-    "file": "assets/app-ChmTF4to.js",
+    "file": "assets/app-G_z1PUOc.js",
     "name": "app",
     "src": "resources/js/app.js",
+    "isEntry": true
+  },
+  "resources/js/cuaderno-de-campo.js": {
+    "file": "assets/cuaderno-de-campo-Chn9z97x.js",
+    "name": "cuaderno-de-campo",
+    "src": "resources/js/cuaderno-de-campo.js",
     "isEntry": true
   }
 }

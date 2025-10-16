@@ -28,6 +28,24 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Ruta de logout súper simple - sin middleware
+Route::get('/logout-simple', function () {
+    try {
+        // Forzar logout sin importar nada
+        Auth::logout();
+        
+        // Limpiar todo
+        session()->flush();
+        
+        // Redirigir
+        return redirect('/login')->with('success', 'Sesión cerrada correctamente.');
+        
+    } catch (\Exception $e) {
+        // Si falla todo, ir al login de todas formas
+        return redirect('/login');
+    }
+})->name('logout.simple');
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
@@ -57,11 +75,15 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         Route::get('/productores/panel', [ProductorController::class, 'panel'])->name('productores.panel');
         Route::get('/productores/listado', [ProductorController::class, 'listado'])->name('productores.listado');
         Route::post('/productores', [ProductorController::class, 'store'])->name('productores.store');
+        Route::get('/productores/{productor}', [ProductorController::class, 'show'])->name('productores.show');
+        Route::put('/productores/{productor}', [ProductorController::class, 'update'])->name('productores.update');
         Route::get('/productores/importar', [ProductorController::class, 'formularioImportacion'])->name('productores.importar');
 
         // Instituciones
         Route::get('/instituciones', [InstitucionController::class, 'panel'])->name('instituciones.panel');
         Route::post('/instituciones', [InstitucionController::class, 'store'])->name('instituciones.store');
+        Route::get('/instituciones/{institucion}', [InstitucionController::class, 'show'])->name('instituciones.show');
+        Route::put('/instituciones/{institucion}', [InstitucionController::class, 'update'])->name('instituciones.update');
         Route::post('/instituciones/{institucion}/validar', [InstitucionController::class, 'validar'])->name('instituciones.validar');
         Route::post('/instituciones/{institucion}/deactivate', [InstitucionController::class, 'deactivate'])->name('instituciones.deactivate');
         Route::post('/instituciones/{institucion}/destroy', [InstitucionController::class, 'destroy'])->name('instituciones.destroy');
@@ -73,6 +95,9 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
 
         // Configuración
         Route::post('/settings', [SettingsController::class, 'store'])->name('settings.store');
+        
+        // Mapa de Geolocalización (reutiliza el componente institucional)
+        Route::get('/mapa', \App\Livewire\Institucional\Mapa::class)->name('mapa');
 });
 
 // Rutas para Institucional
@@ -84,6 +109,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         
         // Rutas de gestión institucional usando Livewire
         Route::get('/participantes', \App\Livewire\Institucional\Participantes\GestionarParticipantes::class)->name('participantes.index');
+        Route::get('/solicitudes', \App\Livewire\Institucional\Solicitudes::class)->name('solicitudes.index');
         Route::get('/reportes', \App\Livewire\Institucional\Reportes::class)->name('reportes.index');
         Route::get('/mapa', \App\Livewire\Institucional\Mapa::class)->name('mapa.index');
         Route::get('/configuracion', \App\Livewire\Institucional\Configuracion::class)->name('configuracion.index');
@@ -152,8 +178,13 @@ Route::get('/solicitud-exitosa', function () {
 
 Route::post('/landing-contact', [\App\Http\Controllers\LandingPageContactController::class, 'store'])->name('landing.contact.store');
 
-Route::get('/cuenca-misiones', function () {
-    return view('pages.cuenca-misiones');
-})->name('cuenca-misiones');
+Route::get('/acerca-del-sistema', function () {
+    return view('pages.acerca-del-sistema');
+})->name('cuenca-misiones'); // Mantener nombre de ruta para compatibilidad
+
+// Alias para mejor semántica
+Route::get('/acerca', function () {
+    return view('pages.acerca-del-sistema');
+})->name('acerca');
 
 Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');

@@ -38,7 +38,7 @@
                     </div>
                     <div class="ml-4">
                         <p class="text-sm font-medium text-gray-600">Total Participantes</p>
-                        <p class="text-2xl font-bold text-gray-900">15</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ $estadisticas['total_participantes'] ?? 0 }}</p>
                     </div>
                 </div>
             </div>
@@ -52,8 +52,8 @@
                         </svg>
                     </div>
                     <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-600">Activos</p>
-                        <p class="text-2xl font-bold text-gray-900">12</p>
+                        <p class="text-sm font-medium text-gray-600">Solicitudes Aprobadas</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ $estadisticas['solicitudes_aprobadas'] ?? 0 }}</p>
                     </div>
                 </div>
             </div>
@@ -67,8 +67,8 @@
                         </svg>
                     </div>
                     <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-600">Nuevos este Mes</p>
-                        <p class="text-2xl font-bold text-gray-900">3</p>
+                        <p class="text-sm font-medium text-gray-600">Solicitudes Pendientes</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ $estadisticas['solicitudes_pendientes'] ?? 0 }}</p>
                     </div>
                 </div>
             </div>
@@ -82,8 +82,8 @@
                         </svg>
                     </div>
                     <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-600">Crecimiento</p>
-                        <p class="text-2xl font-bold text-gray-900">+25%</p>
+                        <p class="text-sm font-medium text-gray-600">Productores Verificados</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ $estadisticas['productores_verificados'] ?? 0 }}</p>
                     </div>
                 </div>
             </div>
@@ -95,29 +95,16 @@
             {{-- Gráfico de Participantes por Mes --}}
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4">Participantes por Mes</h3>
-                <div class="h-64 flex items-center justify-center bg-gray-50 rounded-lg">
-                    <div class="text-center">
-                        <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                        </svg>
-                        <p class="text-gray-500">Gráfico de barras</p>
-                        <p class="text-sm text-gray-400">Chart.js se implementará aquí</p>
-                    </div>
+                <div class="h-64">
+                    <canvas id="participantesChart"></canvas>
                 </div>
             </div>
 
-            {{-- Distribución por Cargo --}}
+            {{-- Solicitudes por Estado --}}
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">Distribución por Cargo</h3>
-                <div class="h-64 flex items-center justify-center bg-gray-50 rounded-lg">
-                    <div class="text-center">
-                        <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path>
-                        </svg>
-                        <p class="text-gray-500">Gráfico de dona</p>
-                        <p class="text-sm text-gray-400">Chart.js se implementará aquí</p>
-                    </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Solicitudes por Estado</h3>
+                <div class="h-64">
+                    <canvas id="solicitudesChart"></canvas>
                 </div>
             </div>
         </div>
@@ -139,3 +126,82 @@
         </div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Datos de participantes por mes
+    const participantesData = @json($participantesPorMes);
+    const meses = Object.keys(participantesData);
+    const valores = Object.values(participantesData);
+    
+    // Gráfico de Participantes por Mes
+    const participantesCtx = document.getElementById('participantesChart').getContext('2d');
+    new Chart(participantesCtx, {
+        type: 'bar',
+        data: {
+            labels: meses,
+            datasets: [{
+                label: 'Participantes',
+                data: valores,
+                backgroundColor: 'rgba(59, 130, 246, 0.5)',
+                borderColor: 'rgba(59, 130, 246, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+    
+    // Datos de solicitudes por estado
+    const solicitudesData = @json($solicitudesPorEstado);
+    const estados = Object.keys(solicitudesData);
+    const cantidades = Object.values(solicitudesData);
+    
+    // Gráfico de Solicitudes por Estado
+    const solicitudesCtx = document.getElementById('solicitudesChart').getContext('2d');
+    new Chart(solicitudesCtx, {
+        type: 'doughnut',
+        data: {
+            labels: estados.map(estado => {
+                const traducciones = {
+                    'pendiente': 'Pendientes',
+                    'aprobada': 'Aprobadas',
+                    'rechazada': 'Rechazadas'
+                };
+                return traducciones[estado] || estado;
+            }),
+            datasets: [{
+                data: cantidades,
+                backgroundColor: [
+                    'rgba(245, 158, 11, 0.8)', // Amarillo para pendientes
+                    'rgba(34, 197, 94, 0.8)',  // Verde para aprobadas
+                    'rgba(239, 68, 68, 0.8)'   // Rojo para rechazadas
+                ],
+                borderColor: [
+                    'rgba(245, 158, 11, 1)',
+                    'rgba(34, 197, 94, 1)',
+                    'rgba(239, 68, 68, 1)'
+                ],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+});
+</script>

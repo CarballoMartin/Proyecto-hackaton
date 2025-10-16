@@ -33,9 +33,14 @@
                         </div>
                         
                         <div class="flex items-center space-x-4">
-                            <!-- Activity Feed Clock -->
-                            <button @click="$dispatch('open-activity-log-modal')" class="relative text-gray-500 hover:text-gray-700 focus:outline-none">
-                                <x-heroicon-o-clock class="h-6 w-6" />
+                            <!-- Ecoganadería Button -->
+                            <button @click="$dispatch('open-ecoganaderia-modal')" 
+                                    class="relative p-2 rounded-full text-green-500 hover:text-white hover:bg-green-500 focus:outline-none transition-all duration-300 group"
+                                    title="Ecoganadería - Prácticas Sustentables">
+                                <x-heroicon-o-globe-americas class="h-6 w-6" />
+                                <span class="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-green-600 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none z-50">
+                                    Ecoganadería
+                                </span>
                             </button>
                             
                             <!-- Notifications Bell -->
@@ -119,7 +124,7 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center py-4">
                     <div class="text-sm text-gray-500">
-                        <a href="mailto:cuencaovinocaprinasurmnes@gmail.com" class="hover:text-indigo-600">cuencaovinocaprinasurmnes@gmail.com</a>
+                        <a href="mailto:soporte@sistema-ganadero.test" class="hover:text-indigo-600">soporte@sistema-ganadero.test</a>
                     </div>
                     <div class="text-sm text-gray-500">
                         &copy; {{ date('Y') }} Proyecto Ovino-Caprinos.

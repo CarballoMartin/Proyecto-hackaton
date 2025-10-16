@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#DC2626;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#B91C1C;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <circle cx="100" cy="100" r="95" fill="url(#grad2)" stroke="#991B1B" stroke-width="3"/>
+  
+  <!-- Manos unidas (cooperación) -->
+  <g transform="translate(100, 100)">
+    <!-- Mano izquierda -->
+    <path d="M -40,-10 L -25,0 L -25,15 L -30,15 L -30,5 L -40,0 Z" fill="#FFFFFF" opacity="0.95"/>
+    <circle cx="-25" cy="0" r="8" fill="#FFFFFF" opacity="0.95"/>
+    
+    <!-- Mano derecha -->
+    <path d="M 40,-10 L 25,0 L 25,15 L 30,15 L 30,5 L 40,0 Z" fill="#FFFFFF" opacity="0.95"/>
+    <circle cx="25" cy="0" r="8" fill="#FFFFFF" opacity="0.95"/>
+    
+    <!-- Apretón de manos en el centro -->
+    <ellipse cx="0" cy="5" rx="18" ry="12" fill="#FFFFFF" opacity="0.95"/>
+    
+    <!-- Estrella cooperativa en el centro -->
+    <polygon points="0,-5 2,-2 5,-1 3,1 3,4 0,3 -3,4 -3,1 -5,-1 -2,-2" fill="#FCA5A5"/>
+  </g>
+  
+  <text x="100" y="170" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+    COOPERATIVA
+  </text>
+</svg>
+
+
+
+
+
+
+

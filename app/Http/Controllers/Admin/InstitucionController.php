@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Actions\Institucion\CreateInstitucion;
+use App\Actions\Institucion\UpdateInstitucion;
 use App\Http\Controllers\Controller;
 use App\Models\Institucion; // Importar el modelo
 use App\Models\SolicitudVerificacion;
@@ -29,7 +30,7 @@ class InstitucionController extends Controller
      */
     public function panel(Request $request)
     {
-        $status = $request->input('status', 'aprobada');
+        $status = $request->input('status', 'todos'); // Cambiado de 'aprobada' a 'todos'
         $search = $request->input('search');
 
         $itemType = 'institucion';
@@ -138,6 +139,61 @@ class InstitucionController extends Controller
         $institucion->update(['validada' => false]);
         $this->logger->log('institucion_desactivada', 'Institucion', $institucion->id, "La institución '{$institucion->nombre}' fue desactivada.");
         return redirect()->route('admin.instituciones.panel')->with('success', 'Institución desactivada exitosamente.');
+    }
+
+    /**
+     * Obtiene los datos de una institución para edición.
+     *
+     * @param  \App\Models\Institucion  $institucion
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show(Institucion $institucion)
+    {
+        return response()->json([
+            'id' => $institucion->id,
+            'nombre' => $institucion->nombre,
+            'cuit' => $institucion->cuit,
+            'contacto_email' => $institucion->contacto_email,
+            'localidad' => $institucion->localidad,
+            'provincia' => $institucion->provincia,
+            'descripcion' => $institucion->descripcion,
+        ]);
+    }
+
+    /**
+     * Actualiza los datos de una institución.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  \App\Models\Institucion $institucion
+     * @param  \App\Actions\Institucion\UpdateInstitucion $updater
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update(Request $request, Institucion $institucion, UpdateInstitucion $updater)
+    {
+        try {
+            $validatedData = $request->validate([
+                'nombre' => 'required|string|max:255',
+                'cuit' => 'nullable|string|max:20|unique:institucions,cuit,' . $institucion->id,
+                'contacto_email' => 'required|email|max:255',
+                'localidad' => 'nullable|string|max:255',
+                'provincia' => 'nullable|string|max:255',
+                'descripcion' => 'nullable|string',
+            ]);
+
+            $updater->ejecutar($institucion->id, $validatedData);
+
+            $this->logger->log('institucion_actualizada', 'Institucion', $institucion->id, "La institución '{$institucion->nombre}' fue actualizada.");
+
+            return response()->json([
+                'message' => 'Institución actualizada exitosamente.',
+            ]);
+
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], 422);
+        } catch (Throwable $e) {
+            Log::error('Error al actualizar institución: ' . $e->getMessage());
+            return response()->json(['message' => 'Ha ocurrido un error inesperado al actualizar la institución.'], 500);
+        }
     }
 
     /**

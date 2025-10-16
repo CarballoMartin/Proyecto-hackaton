@@ -102,28 +102,36 @@
                 // Los scripts de los componentes (como el mapa) se manejan en sus propios archivos.
                 // Este bloque es para scripts que sean específicos de esta página.
 
-                // Gráfico de Composición
+                // Gráfico de Composición Ganadera (datos reales)
+                const composicionData = @json($composicionGanadera);
+                const labelsComposicion = composicionData.map(item => item.nombre);
+                const dataComposicion = composicionData.map(item => parseInt(item.total));
+                
                 new Chart(document.getElementById('compositionChart'), {
                     type: 'doughnut',
                     data: {
-                        labels: ['Ovinos', 'Caprinos'],
+                        labels: labelsComposicion,
                         datasets: [{
                             label: 'Total Animales',
-                            data: [6250, 2180],
-                            backgroundColor: ['#34D399', '#60A5FA'],
+                            data: dataComposicion,
+                            backgroundColor: ['#34D399', '#60A5FA', '#F59E0B', '#EF4444', '#8B5CF6'],
                         }]
                     },
                     options: { responsive: true, maintainAspectRatio: false }
                 });
 
-                // Gráfico de Productores por Municipio
+                // Gráfico de Productores por Municipio (datos reales)
+                const municipiosData = @json($productoresPorMunicipio);
+                const labelsMunicipios = municipiosData.map(item => item.municipio || 'Sin municipio');
+                const dataMunicipios = municipiosData.map(item => parseInt(item.total));
+                
                 new Chart(document.getElementById('producersByCityChart'), {
                     type: 'bar',
                     data: {
-                        labels: ['Apóstoles', 'Concepción de la Sierra', 'San José', 'Azara', 'Tres Capones'],
+                        labels: labelsMunicipios,
                         datasets: [{
                             label: 'Nº de Productores',
-                            data: [45, 32, 28, 21, 15],
+                            data: dataMunicipios,
                             backgroundColor: '#A5B4FC',
                         }]
                     },

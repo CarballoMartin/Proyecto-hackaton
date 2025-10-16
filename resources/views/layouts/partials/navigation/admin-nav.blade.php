@@ -63,8 +63,8 @@
                     </div>
 
                     <!-- Geolocalizacion Link -->
-                    <x-nav-link href="{{ route('superadmin.mapa') }}" :active="request()->routeIs('superadmin.mapa')">
-                        Geolocalizacion
+                    <x-nav-link href="{{ route('admin.mapa') }}" :active="request()->routeIs('admin.mapa')">
+                        Geolocalización
                     </x-nav-link>
                 </div>
             </div>
@@ -138,12 +138,10 @@
 
                             <div class="border-t border-gray-200"></div>
 
-                            <form method="POST" action="{{ route('logout') }}" x-data>
-                                @csrf
-                                <x-dropdown-link href="#" @click.prevent="$root.submit();">
-                                    Cerrar Sesión
-                                </x-dropdown-link>
-                            </form>
+                            <!-- Logout Simple -->
+                            <a href="{{ route('logout.simple') }}" class="block px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                Cerrar Sesión
+                            </a>
                         </x-slot>
                     </x-dropdown>
                 </div>
@@ -201,12 +199,10 @@
                     </x-responsive-nav-link>
                 @endif
 
-                <form method="POST" action="{{ route('logout') }}" x-data>
-                    @csrf
-                    <x-responsive-nav-link href="#" @click.prevent="$root.submit();">
-                        Cerrar Sesión
-                    </x-responsive-nav-link>
-                </form>
+                <!-- Logout Mobile -->
+                <a href="{{ route('logout.simple') }}" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300 transition duration-150 ease-in-out">
+                    Cerrar Sesión
+                </a>
             </div>
         </div>
     </div>

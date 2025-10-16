@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Fondo circular -->
+  <circle cx="100" cy="100" r="95" fill="#4F46E5" stroke="#3730A3" stroke-width="3"/>
+  
+  <!-- Silueta de oveja/ganado -->
+  <g transform="translate(100, 100)">
+    <!-- Cuerpo -->
+    <ellipse cx="0" cy="5" rx="35" ry="25" fill="#FFFFFF" opacity="0.9"/>
+    
+    <!-- Cabeza -->
+    <circle cx="-30" cy="-5" r="12" fill="#FFFFFF" opacity="0.9"/>
+    
+    <!-- Orejas -->
+    <ellipse cx="-35" cy="-10" rx="5" ry="8" fill="#FFFFFF" opacity="0.8"/>
+    <ellipse cx="-25" cy="-10" rx="5" ry="8" fill="#FFFFFF" opacity="0.8"/>
+    
+    <!-- Patas -->
+    <rect x="-25" y="25" width="6" height="20" fill="#FFFFFF" opacity="0.9" rx="3"/>
+    <rect x="-10" y="25" width="6" height="20" fill="#FFFFFF" opacity="0.9" rx="3"/>
+    <rect x="5" y="25" width="6" height="20" fill="#FFFFFF" opacity="0.9" rx="3"/>
+    <rect x="20" y="25" width="6" height="20" fill="#FFFFFF" opacity="0.9" rx="3"/>
+    
+    <!-- Textura lana (círculos pequeños) -->
+    <circle cx="-5" cy="0" r="3" fill="#E0E7FF"/>
+    <circle cx="8" cy="-3" r="3" fill="#E0E7FF"/>
+    <circle cx="5" cy="8" r="3" fill="#E0E7FF"/>
+    <circle cx="-12" cy="5" r="3" fill="#E0E7FF"/>
+  </g>
+  
+  <!-- Texto/Iniciales -->
+  <text x="100" y="170" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+    SG
+  </text>
+  <text x="100" y="185" font-family="Arial, sans-serif" font-size="10" fill="#E0E7FF" text-anchor="middle">
+    Sistema Ganadero
+  </text>
+</svg>
+
+
+
+
+
+
+

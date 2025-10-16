@@ -57,7 +57,7 @@
                     </div>
                     <div class="md:col-span-2">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Dirección</label>
-                        <input type="text" value="Ruta Nacional 14, Km 1198, Apóstoles, Misiones" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                        <input type="text" value="Dirección de ejemplo" placeholder="Ingrese la dirección de la institución" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
                     </div>
                 </div>
             </div>

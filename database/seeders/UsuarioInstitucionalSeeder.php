@@ -65,16 +65,16 @@ class UsuarioInstitucionalSeeder extends Seeder
     private function generarEmailInstitucional(Institucion $institucion): string
     {
         $nombres = [
-            'INTA - Instituto Nacional de Tecnología Agropecuaria' => 'admin@inta.misiones.test',
-            'Universidad Nacional de Misiones' => 'admin@unam.test',
-            'Ministerio del Agro y la Producción de Misiones' => 'admin@agro.misiones.test',
-            'SENASA - Servicio Nacional de Sanidad y Calidad Agroalimentaria' => 'admin@senasa.misiones.test',
-            'Cooperativa Agrícola de Misiones' => 'admin@coopmisiones.test',
-            'Asociación de Ganaderos del Sur' => 'admin@ganaderossur.test',
+            'Instituto Tecnológico Agropecuario' => 'admin@instituto-tech.test',
+            'Universidad Estatal de Agricultura' => 'admin@universidad-agro.test',
+            'Ministerio de Agricultura y Ganadería' => 'admin@ministerio-agro.test',
+            'Servicio Nacional Sanitario' => 'admin@servicio-sanitario.test',
+            'Cooperativa Agrícola Regional' => 'admin@cooperativa-regional.test',
+            'Asociación de Productores del Sur' => 'admin@asociacion-sur.test',
             'Fundación para el Desarrollo Rural' => 'admin@fundacionrural.test',
-            'Cámara de Productores Ovino-Caprinos' => 'admin@camaraovinocaprina.test',
-            'Instituto de Investigación Agropecuaria Regional' => 'admin@iiar.test',
-            'Asociación de Técnicos Agropecuarios' => 'admin@atecnicos.test',
+            'Cámara de Productores Ganaderos' => 'admin@camara-productores.test',
+            'Instituto de Investigación Agropecuaria' => 'admin@instituto-investigacion.test',
+            'Asociación de Técnicos Agropecuarios' => 'admin@asociacion-tecnicos.test',
         ];
 
         return $nombres[$institucion->nombre] ?? 'admin@' . strtolower(str_replace(' ', '', $institucion->nombre)) . '.test';
@@ -86,16 +86,16 @@ class UsuarioInstitucionalSeeder extends Seeder
     private function generarNombreAdmin(Institucion $institucion): string
     {
         $nombres = [
-            'INTA - Instituto Nacional de Tecnología Agropecuaria' => 'Admin INTA Misiones',
-            'Universidad Nacional de Misiones' => 'Admin UNaM',
-            'Ministerio del Agro y la Producción de Misiones' => 'Admin Ministerio Agro',
-            'SENASA - Servicio Nacional de Sanidad y Calidad Agroalimentaria' => 'Admin SENASA Misiones',
-            'Cooperativa Agrícola de Misiones' => 'Admin Cooperativa Agrícola',
-            'Asociación de Ganaderos del Sur' => 'Admin Ganaderos del Sur',
+            'Instituto Tecnológico Agropecuario' => 'Admin Instituto Tecnológico',
+            'Universidad Estatal de Agricultura' => 'Admin Universidad Agricultura',
+            'Ministerio de Agricultura y Ganadería' => 'Admin Ministerio Agricultura',
+            'Servicio Nacional Sanitario' => 'Admin Servicio Sanitario',
+            'Cooperativa Agrícola Regional' => 'Admin Cooperativa Regional',
+            'Asociación de Productores del Sur' => 'Admin Productores Sur',
             'Fundación para el Desarrollo Rural' => 'Admin Fundación Rural',
-            'Cámara de Productores Ovino-Caprinos' => 'Admin Cámara Ovino-Caprinos',
-            'Instituto de Investigación Agropecuaria Regional' => 'Admin IIAR',
-            'Asociación de Técnicos Agropecuarios' => 'Admin ATA',
+            'Cámara de Productores Ganaderos' => 'Admin Cámara Productores',
+            'Instituto de Investigación Agropecuaria' => 'Admin Instituto Investigación',
+            'Asociación de Técnicos Agropecuarios' => 'Admin Técnicos Agropecuarios',
         ];
 
         return $nombres[$institucion->nombre] ?? 'Admin ' . $institucion->nombre;

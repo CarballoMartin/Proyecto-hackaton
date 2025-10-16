@@ -16,6 +16,9 @@
 
         {{-- Contenido principal --}}
         {{ $slot }}
+        
+        {{-- Modal de Ecoganadería --}}
+        <x-modals.ecoganaderia-modal />
 
     </x-panel-layout>
 </x-app-layout>

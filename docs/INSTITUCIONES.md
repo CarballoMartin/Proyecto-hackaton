@@ -15,16 +15,16 @@ Este documento describe el estado actual del sistema de instituciones, los seede
 
 | Institución | Email Admin | Contraseña | Estado | Logo |
 |-------------|-------------|------------|--------|------|
-| INTA - Instituto Nacional de Tecnología Agropecuaria | admin@inta.misiones.test | password123 | ✅ Validada | inta1.png |
-| Universidad Nacional de Misiones | admin@unam.test | password123 | ✅ Validada | unam.jpg |
-| Ministerio del Agro y la Producción de Misiones | admin@agro.misiones.test | password123 | ✅ Validada | candelaria.png |
-| SENASA - Servicio Nacional de Sanidad y Calidad Agroalimentaria | admin@senasa.misiones.test | password123 | ✅ Validada | logoovinos.png |
-| Cooperativa Agrícola de Misiones | admin@coopmisiones.test | password123 | ⏳ Pendiente | todostenemos.jpg |
-| Asociación de Ganaderos del Sur | admin@ganaderossur.test | password123 | ⏳ Pendiente | Logo SRM.jpg |
-| Fundación para el Desarrollo Rural | admin@fundacionrural.test | password123 | ⏳ Pendiente | efa-sancristobal.jpg |
-| Cámara de Productores Ovino-Caprinos | admin@camaraovinocaprina.test | password123 | ⏳ Pendiente | logoovinos.png |
-| Instituto de Investigación Agropecuaria Regional | admin@iiar.test | password123 | ⏳ Pendiente | efa-sancristobal.jpg |
-| Asociación de Técnicos Agropecuarios | admin@atecnicos.test | password123 | ⏳ Pendiente | efa-sancristobal.jpg |
+| Instituto Tecnológico Agropecuario | admin@instituto-tech.test | password123 | ✅ Validada | - |
+| Universidad Estatal de Agricultura | admin@universidad-agro.test | password123 | ✅ Validada | - |
+| Ministerio de Agricultura y Ganadería | admin@ministerio-agro.test | password123 | ✅ Validada | - |
+| Servicio Nacional Sanitario | admin@servicio-sanitario.test | password123 | ✅ Validada | - |
+| Cooperativa Agrícola Regional | admin@cooperativa-regional.test | password123 | ⏳ Pendiente | - |
+| Asociación de Productores del Sur | admin@asociacion-sur.test | password123 | ⏳ Pendiente | - |
+| Fundación para el Desarrollo Rural | admin@fundacionrural.test | password123 | ⏳ Pendiente | - |
+| Cámara de Productores Ganaderos | admin@camara-productores.test | password123 | ⏳ Pendiente | - |
+| Instituto de Investigación Agropecuaria | admin@instituto-investigacion.test | password123 | ⏳ Pendiente | - |
+| Asociación de Técnicos Agropecuarios | admin@asociacion-tecnicos.test | password123 | ⏳ Pendiente | - |
 
 ## 🗂️ Archivos Creados/Modificados
 
@@ -77,14 +77,9 @@ Para probar cada institución, usa los emails de la tabla anterior.
 
 ## 🎨 Logos Disponibles
 
-Los logos están ubicados en `public/logos/` y incluyen:
-- `inta1.png` - INTA
-- `unam.jpg` - Universidad Nacional de Misiones
-- `candelaria.png` - Ministerio (usando logo de municipio)
-- `logoovinos.png` - SENASA y Cámara Ovino-Caprinos
-- `todostenemos.jpg` - Cooperativa
-- `Logo SRM.jpg` - Ganaderos del Sur
-- `efa-sancristobal.jpg` - Fundación, IIAR, ATA
+Los logos están ubicados en `public/logos/`:
+- Las instituciones pueden tener logos personalizados asignados en la columna `logo_path`
+- Por defecto se usa `null` (sin logo) o un placeholder genérico
 
 ## 🔄 Rutas de Acceso
 

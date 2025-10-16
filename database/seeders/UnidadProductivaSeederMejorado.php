@@ -136,7 +136,7 @@ class UnidadProductivaSeederMejorado extends Seeder
                 
                 $unidad = UnidadProductiva::create([
                     'nombre' => $unidadData['nombre'] . ' - ' . $productor->nombre,
-                    'identificador_local' => $unidadData['identificador_local'],
+                    'identificador_local' => $unidadData['identificador_local'] . '-' . ($index * 3 + $i + 1),
                     'tipo_identificador_id' => $tiposIdentificador->random()->id,
                     'activo' => true,
                     'completo' => true,

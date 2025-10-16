@@ -1,6 +1,6 @@
 # 🐑 Sistema de Gestión Ovino-Caprino
 
-Sistema web para la gestión integral de producción ovina y caprina, desarrollado con Laravel 10 y Livewire 3.
+Sistema web para la gestión integral de producción ganadera (ovinos y caprinos), desarrollado con Laravel 12 y Livewire 3.
 
 ## 🚀 Características
 
@@ -13,14 +13,14 @@ Sistema web para la gestión integral de producción ovina y caprina, desarrolla
 
 ## 🛠️ Tecnologías
 
-- **Backend**: Laravel 10.x, Livewire 3.x, MySQL
+- **Backend**: Laravel 12.x, Livewire 3.x, MySQL/SQLite
 - **Frontend**: Tailwind CSS, Blade Templates, Chart.js
 - **Exportación**: Laravel DomPDF, Laravel Excel
 - **Autenticación**: Laravel Fortify, Sanctum
 
 ## 📋 Requisitos
 
-- PHP 8.1 o superior
+- PHP 8.2 o superior
 - Composer
 - Node.js y npm
 - MySQL 5.7 o superior

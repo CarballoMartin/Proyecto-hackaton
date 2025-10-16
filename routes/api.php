@@ -24,8 +24,8 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::post('/solicitar-codigo', [AuthController::class, 'solicitarCodigo']);
 Route::post('/iniciar-sesion', [AuthController::class, 'iniciarSesion']);
 
-// Ruta para obtener las ubicaciones de los campos con sus productores asociados
-Route::get('/locations', [MapController::class, 'getLocations']);
+// Ruta para obtener las ubicaciones de los campos con sus productores asociados (con rate limiting)
+Route::middleware('throttle:60,1')->get('/locations', [MapController::class, 'getLocations']);
 
 // Ruta para obtener los parajes de un municipio
 Route::get('/municipios/{municipio}/parajes', [ParajeController::class, 'index'])->middleware('auth:sanctum');

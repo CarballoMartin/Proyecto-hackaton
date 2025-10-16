@@ -29,7 +29,15 @@ class AuthController extends Controller
             return null;
         }
 
-        $productor = Productor::whereRaw('REPLACE(REPLACE(REPLACE(telefono, "+", ""), "-", ""), " ", "") = ?', [$sanitizedIdentificador])->first();
+        // Busca en Productores usando múltiples formatos posibles
+        $productor = Productor::where(function($query) use ($sanitizedIdentificador) {
+            $query->where('telefono', $sanitizedIdentificador)
+                  ->orWhere('telefono', '+' . $sanitizedIdentificador)
+                  ->orWhere('telefono', '-' . $sanitizedIdentificador)
+                  ->orWhere('telefono', ' ' . $sanitizedIdentificador)
+                  ->orWhere('telefono', '+ ' . $sanitizedIdentificador)
+                  ->orWhere('telefono', '- ' . $sanitizedIdentificador);
+        })->first();
 
         return $productor ? $productor->usuario : null;
     }

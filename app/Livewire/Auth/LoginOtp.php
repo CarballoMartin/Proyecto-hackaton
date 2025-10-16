@@ -107,8 +107,15 @@ class LoginOtp extends Component
             return null;
         }
 
-        // Busca en Productores, sanitizando también el número de la BD.
-        $productor = Productor::whereRaw('REPLACE(REPLACE(REPLACE(telefono, "+", ""), "-", ""), " ", "") = ?', [$sanitizedIdentificador])->first();
+        // Busca en Productores usando múltiples formatos posibles
+        $productor = Productor::where(function($query) use ($sanitizedIdentificador) {
+            $query->where('telefono', $sanitizedIdentificador)
+                  ->orWhere('telefono', '+' . $sanitizedIdentificador)
+                  ->orWhere('telefono', '-' . $sanitizedIdentificador)
+                  ->orWhere('telefono', ' ' . $sanitizedIdentificador)
+                  ->orWhere('telefono', '+ ' . $sanitizedIdentificador)
+                  ->orWhere('telefono', '- ' . $sanitizedIdentificador);
+        })->first();
 
         // Si se encuentra un productor, devuelve su usuario asociado (la relación es 'usuario')
         if ($productor) {

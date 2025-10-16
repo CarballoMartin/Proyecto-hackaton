@@ -4,13 +4,13 @@
             <div class="flex items-center space-x-4">
                 <a href="{{ url('/') }}" class="flex items-center space-x-2 p-2 rounded-lg shadow-md">
                     <x-logo class="h-10 w-10" />
-                    <span class="font-bold text-xl text-gray-700">Gestión Cuenca Ovino-Caprina</span>
+                    <span class="font-bold text-xl text-gray-700">Sistema de Gestión Ganadera</span>
                 </a>
             </div>
 
             <div class="hidden md:flex items-center space-x-8">
                 <a href="#features" class="text-base font-medium text-gray-500 hover:text-gray-900">Características</a>
-                <a href="{{ route('cuenca-misiones') }}" class="text-base font-medium text-gray-500 hover:text-gray-900">La Cuenca</a>
+                <a href="{{ route('cuenca-misiones') }}" class="text-base font-medium text-gray-500 hover:text-gray-900">Acerca de</a>
                                 <button @click="contactModalOpen = !contactModalOpen" class="text-base font-medium text-gray-500 hover:text-gray-900">Contacto</button>
             </div>
 
@@ -34,7 +34,7 @@
                 <!-- Menú desplegable móvil -->
                 <div x-show="mobileMenuOpen" x-cloak @click.away="mobileMenuOpen = false" class="absolute top-full right-4 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 p-4 space-y-2">
                     <a href="#features" class="block text-gray-700">Características</a>
-                    <a href="{{ route('cuenca-misiones') }}" class="block text-gray-700">La Cuenca</a>
+                    <a href="{{ route('cuenca-misiones') }}" class="block text-gray-700">Acerca de</a>
                                         <button @click="contactModalOpen = !contactModalOpen; mobileMenuOpen = false" class="block text-gray-700 w-full text-left">Contacto</button>
                     <a href="{{ route('login') }}" class="block text-indigo-600 font-medium">Iniciar Sesión</a>
                     <a href="{{ route('registro.institucional') }}" class="block text-white bg-indigo-600 px-3 py-2 rounded-md">Solicitar Acceso</a>

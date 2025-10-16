@@ -21,8 +21,9 @@
             {{-- Cargar modales específicos del panel de Superadmin --}}
             @if (auth()->check() && auth()->user()->rol === 'superadmin')
                 <x-modals.institucion-form />
+                <x-modals.institucion-edit-form /> {{-- ✅ Modal de edición de instituciones --}}
                 <x-modals.productor-form />
-                {{-- <x-modals.productor-edit-form /> --}} {{-- Comentado por si aún no está migrado a componente Blade --}}
+                <x-modals.productor-edit-form /> {{-- ✅ Modal de edición de productores --}}
                 @isset($configuracion)
                     <x-modals.configuracion :configuracion="$configuracion" />
                 @endisset
@@ -34,6 +35,9 @@
                     <x-modals.activity-feed :items="$activityItems" />
                 @endif
                 <x-modals.activity-log-modal />
+                
+                {{-- Modal de Ecoganadería --}}
+                <x-modals.ecoganaderia-modal />
             @endif
         @endpush
 

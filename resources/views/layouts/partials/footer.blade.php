@@ -4,7 +4,7 @@
             &copy; {{ date('Y') }} {{ config('app.name', 'Sistema de Gestión Ovino-Caprino') }}. Todos los derechos reservados.
         </p>
         <p class="text-xs text-gray-500 mt-1">
-            Desarrollado con ❤️ para la Cuenca Ovino-Caprina Zona Sur de Misiones.
+            Desarrollado con ❤️ para la gestión ganadera sustentable.
         </p>
     </div>
 </footer>

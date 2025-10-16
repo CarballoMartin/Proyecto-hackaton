@@ -47,12 +47,12 @@ class ListarProductores extends Component
 
     public function render()
     {
-        $productores = Productor::with('usuario')
+        $productores = Productor::with(['usuario', 'unidadesProductivas'])
             ->where(function ($query) {
                 $query->where('nombre', 'like', '%' . $this->search . '%')
                     ->orWhere('dni', 'like', '%' . $this->search . '%');
             })
-            ->paginate(10);
+            ->paginate(25); // Aumentado de 10 a 25 para ver todos los productores en una página
 
         return view('livewire.admin.listar-productores', [
             'productores' => $productores

@@ -4,7 +4,7 @@
 
         <!-- Título -->
         <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-            Nuestra Visión: Impulsando el Futuro de la Cuenca
+            Nuestra Visión: Impulsando el Futuro Ganadero
         </h2>
 
         <!-- Contenedor del Video -->

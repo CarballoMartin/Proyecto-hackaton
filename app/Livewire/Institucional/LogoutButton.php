@@ -10,20 +10,20 @@ class LogoutButton extends Component
 {
     public function logout()
     {
-        // Limpiar todas las sesiones
-        Session::flush();
-        
-        // Cerrar sesión
-        Auth::logout();
-        
-        // Invalidar la sesión actual
-        request()->session()->invalidate();
-        
-        // Regenerar el token CSRF
-        request()->session()->regenerateToken();
-        
-        // Redirigir al login
-        return redirect()->route('login');
+        try {
+            // Cerrar sesión
+            Auth::logout();
+            
+            // Limpiar sesión
+            session()->flush();
+            
+            // Redirigir al login
+            return redirect()->route('login')->with('success', 'Sesión cerrada correctamente.');
+            
+        } catch (\Exception $e) {
+            // Si hay error, redirigir de todas formas
+            return redirect()->route('login');
+        }
     }
 
     public function render()

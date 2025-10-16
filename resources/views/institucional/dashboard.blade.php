@@ -100,7 +100,7 @@
             </a>
 
             {{-- Revisar Solicitudes --}}
-            <a href="#" class="group relative block overflow-hidden rounded-3xl bg-white p-8 shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100">
+            <a href="{{ route('institucional.solicitudes') }}" class="group relative block overflow-hidden rounded-3xl bg-white p-8 shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100">
                 <div class="flex items-center mb-6">
                     <div class="w-16 h-16 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
                         <span class="text-white text-2xl font-bold">RS</span>

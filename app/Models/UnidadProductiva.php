@@ -110,4 +110,20 @@ class UnidadProductiva extends Model
     {
         return $this->belongsTo(CondicionTenencia::class);
     }
+
+    /**
+     * Relación con datos climáticos
+     */
+    public function datosClimaticos()
+    {
+        return $this->hasMany(DatoClimaticoCache::class);
+    }
+
+    /**
+     * Obtiene los datos climáticos más recientes
+     */
+    public function climaActual()
+    {
+        return $this->hasOne(DatoClimaticoCache::class)->latestOfMany('fecha_consulta');
+    }
 }

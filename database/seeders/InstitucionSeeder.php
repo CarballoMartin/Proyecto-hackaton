@@ -27,43 +27,43 @@ class InstitucionSeeder extends Seeder
 
         // Instituciones Aprobadas
         Institucion::create([
-            'nombre' => 'INTA',
-            'cuit' => '30-54668326-5',
-            'contacto_email' => 'contacto@inta.gob.ar',
-            'logo_path' => 'logos/inta1.png',
-            'localidad' => 'Posadas',
-            'provincia' => 'Misiones',
+            'nombre' => 'Instituto Tecnológico Agropecuario',
+            'cuit' => '30-11111111-1',
+            'contacto_email' => 'contacto@instituto-tech.test',
+            'logo_path' => null,
+            'localidad' => 'Capital Provincial',
+            'provincia' => 'Provincia del Valle',
             'validada' => true,
         ]);
 
         Institucion::create([
-            'nombre' => 'Universidad Nacional de Misiones',
-            'cuit' => '30-67890123-4',
-            'contacto_email' => 'info@unam.edu.ar',
-            'logo_path' => 'logos/unam.jpg',
-            'localidad' => 'Posadas',
-            'provincia' => 'Misiones',
+            'nombre' => 'Universidad Estatal de Agricultura',
+            'cuit' => '30-22222222-2',
+            'contacto_email' => 'info@universidad-agro.test',
+            'logo_path' => null,
+            'localidad' => 'Capital Provincial',
+            'provincia' => 'Provincia del Valle',
             'validada' => true,
         ]);
 
         // Instituciones No Aprobadas (Pendientes)
         Institucion::create([
-            'nombre' => 'Cooperativa Agrícola de Misiones',
-            'cuit' => '30-12345678-9',
-            'contacto_email' => 'admin@coopmisiones.com.ar',
-            'logo_path' => 'logos/todostenemos.jpg',
-            'localidad' => 'Oberá',
-            'provincia' => 'Misiones',
+            'nombre' => 'Cooperativa Agrícola Regional',
+            'cuit' => '30-33333333-3',
+            'contacto_email' => 'admin@cooperativa-regional.test',
+            'logo_path' => null,
+            'localidad' => 'Ciudad del Sur',
+            'provincia' => 'Provincia del Valle',
             'validada' => false,
         ]);
 
         Institucion::create([
-            'nombre' => 'Asociación de Ganaderos del Sur',
+            'nombre' => 'Asociación de Productores del Sur',
             'cuit' => null, // Ejemplo de CUIT nulo
-            'contacto_email' => 'secretaria@ganaderossur.org',
-            'logo_path' => 'logos/Logo SRM.jpg',
-            'localidad' => 'Apóstoles',
-            'provincia' => 'Misiones',
+            'contacto_email' => 'secretaria@asociacion-sur.test',
+            'logo_path' => null,
+            'localidad' => 'Ciudad del Norte',
+            'provincia' => 'Provincia del Valle',
             'validada' => false,
         ]);
     }

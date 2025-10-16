@@ -48,16 +48,16 @@ App\Models\Institucion::with('participantes.usuario')->get(['nombre', 'validada'
 - Password: password
 
 ### Instituciones (Todas usan password123)
-- INTA: admin@inta.misiones.test
-- UNaM: admin@unam.test
-- Ministerio: admin@agro.misiones.test
-- SENASA: admin@senasa.misiones.test
-- Cooperativa: admin@coopmisiones.test
-- Ganaderos: admin@ganaderossur.test
-- Fundación: admin@fundacionrural.test
-- Cámara: admin@camaraovinocaprina.test
-- IIAR: admin@iiar.test
-- ATA: admin@atecnicos.test
+- Instituto Tecnológico: admin@instituto-tech.test
+- Universidad Agricultura: admin@universidad-agro.test
+- Ministerio Agricultura: admin@ministerio-agro.test
+- Servicio Sanitario: admin@servicio-sanitario.test
+- Cooperativa Regional: admin@cooperativa-regional.test
+- Productores Sur: admin@asociacion-sur.test
+- Fundación Rural: admin@fundacionrural.test
+- Cámara Productores: admin@camara-productores.test
+- Instituto Investigación: admin@instituto-investigacion.test
+- Técnicos Agropecuarios: admin@asociacion-tecnicos.test
 
 ## 🎯 URLs de Prueba
 

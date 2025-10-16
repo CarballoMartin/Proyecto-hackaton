@@ -12,7 +12,8 @@
         @if (!$institucion->validada)
             <button @click="validationUrl = '{{ route('admin.instituciones.validar', $institucion) }}'; openValidateModal = true" class="text-green-600 hover:text-green-900">Validar</button>
         @endif
-        <a href="#" class="text-indigo-600 hover:text-indigo-900 ml-4">Detalles</a>
+        <button @click.prevent="$dispatch('open-edit-institucion-modal', { id: {{ $institucion->id }} })" 
+                class="text-indigo-600 hover:text-indigo-900 ml-4">Editar</button>
         @if ($institucion->validada)
             <button @click="deactivationUrl = '{{ route('admin.instituciones.deactivate', $institucion) }}'; openDeactivateModal = true" class="text-yellow-600 hover:text-yellow-900 ml-4">Desactivar</button>
         @else

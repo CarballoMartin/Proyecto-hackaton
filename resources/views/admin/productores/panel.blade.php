@@ -10,7 +10,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
 
                 {{-- Tarjeta: Registrar Productor --}}
-                <button type="button" @click="$dispatch('openProductorFormModal')" class="group relative block overflow-hidden rounded-xl border border-gray-200 bg-white p-5 shadow-md transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-xl cursor-pointer text-left w-full">
+                <button type="button" @click="$dispatch('open-productor-form-modal')" class="group relative block overflow-hidden rounded-xl border border-gray-200 bg-white p-5 shadow-md transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-xl cursor-pointer text-left w-full">
                     <span class="absolute -right-4 -top-4 z-0 h-20 w-20 rounded-full bg-indigo-50 transition-all duration-300 group-hover:scale-[10]"></span>
                     <div class="relative z-10">
                         <div class="inline-flex rounded-lg bg-indigo-100 p-4 text-indigo-600">
@@ -41,11 +41,21 @@
                     </div>
                 </a>
 
-                {{-- Tarjeta de Prueba Simple --}}
-                <div class="bg-yellow-100 p-4 border border-yellow-400">
-                    <h3 class="font-bold">Enlace de Prueba</h3>
-                    <a href="{{ route('admin.productores.listado') }}" class="text-blue-600 underline">Hacer clic aquí para Listar y Modificar</a>
-                </div>
+                {{-- Tarjeta: Listar y Modificar --}}
+                <a href="{{ route('admin.productores.listado') }}" class="group relative block overflow-hidden rounded-xl border border-gray-200 bg-white p-5 shadow-md transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-xl">
+                    <span class="absolute -right-4 -top-4 z-0 h-20 w-20 rounded-full bg-purple-50 transition-all duration-300 group-hover:scale-[10]"></span>
+                    <div class="relative z-10">
+                        <div class="inline-flex rounded-lg bg-purple-100 p-4 text-purple-600">
+                            <svg class="h-8 w-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                        </div>
+                        <div class="mt-6">
+                            <h3 class="text-lg font-bold text-gray-900">Listar y Modificar</h3>
+                            <p class="mt-2 text-sm text-gray-600">Ver, buscar y editar productores registrados.</p>
+                        </div>
+                    </div>
+                </a>
 
             </div>
         </div>

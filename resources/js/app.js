@@ -388,6 +388,91 @@ document.addEventListener('alpine:init', () => {
         }
     }));
 
+    Alpine.data('editInstitucionModal', () => ({
+        show: false,
+        loading: false,
+        formError: '',
+        errors: {},
+        institucionId: null,
+        formData: {
+            nombre: '',
+            cuit: '',
+            contacto_email: '',
+            localidad: '',
+            provincia: '',
+            descripcion: ''
+        },
+
+        openModal(id) {
+            this.resetForm();
+            this.institucionId = id;
+            this.show = true;
+            this.loading = true;
+            fetch(`/superadmin/instituciones/${id}`)
+                .then(response => response.json())
+                .then(data => {
+                    this.formData = data;
+                })
+                .catch(error => {
+                    console.error('Error fetching institucion data:', error);
+                    this.formError = 'Error al cargar los datos de la institución.';
+                })
+                .finally(() => this.loading = false);
+        },
+
+        resetForm() {
+            this.formData = { nombre: '', cuit: '', contacto_email: '', localidad: '', provincia: '', descripcion: '' };
+            this.errors = {};
+            this.formError = '';
+            this.loading = false;
+            this.institucionId = null;
+        },
+
+        async updateInstitucion() {
+            this.loading = true;
+            this.errors = {};
+            this.formError = '';
+
+            try {
+                const response = await fetch(`/superadmin/instituciones/${this.institucionId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify(this.formData)
+                });
+
+                if (response.status === 422) {
+                    const data = await response.json();
+                    this.errors = data.errors;
+                    throw new Error('Error de validación');
+                }
+
+                if (!response.ok) {
+                    const data = await response.json();
+                    this.formError = data.message || 'Ocurrió un error en el servidor.';
+                    throw new Error('Error en el servidor');
+                }
+
+                const data = await response.json();
+                
+                window.dispatchEvent(new CustomEvent('banner-message', { detail: { style: 'success', message: data.message } }));
+                
+                this.show = false;
+                window.location.reload(); // Recargar para ver cambios
+
+            } catch (error) {
+                console.error('Error al actualizar institución:', error);
+                if (!this.formError && Object.keys(this.errors).length === 0) {
+                    this.formError = 'No se pudo completar la solicitud. Revisa tu conexión o contacta a soporte.';
+                }
+            } finally {
+                this.loading = false;
+            }
+        }
+    }));
+
     Alpine.data('productorPerfilModal', () => ({
         show: false,
         loading: true,

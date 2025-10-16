@@ -9,11 +9,23 @@
     <div class="relative bg-indigo-600 text-white rounded-lg shadow-lg p-6 mb-8 overflow-hidden">
         <div class="flex space-x-12 animate-scroll-and-repeat">
             @php
+                // Datos reales calculados desde la base de datos
+                $user = Auth::user();
+                $productor = \App\Models\Productor::where('usuario_id', $user->id)->first();
+                
+                $totalCampos = $productor ? $productor->unidadesProductivas->count() : 0;
+                $totalStock = $productor ? \App\Models\StockAnimal::whereIn('unidad_productiva_id', $productor->unidadesProductivas->pluck('id'))->sum('cantidad') : 0;
+                
+                // Últimos registros de stock (últimos 7 días)
+                $registrosRecientes = $productor ? \App\Models\StockAnimal::whereIn('unidad_productiva_id', $productor->unidadesProductivas->pluck('id'))
+                    ->where('created_at', '>=', now()->subDays(7))
+                    ->count() : 0;
+                
                 $stats = [
-                    ['icon' => 'heroicon-s-arrow-trending-up', 'label' => 'Nacimientos (Últ. 7 días)', 'value' => '+32', 'color' => 'text-green-300'],
-                    ['icon' => 'heroicon-s-currency-dollar', 'label' => 'Ventas (Últ. 7 días)', 'value' => '12', 'color' => 'text-green-300'],
-                    ['icon' => 'heroicon-s-arrow-trending-down', 'label' => 'Bajas (Últ. 7 días)', 'value' => '-5', 'color' => 'text-red-300'],
-                    ['icon' => 'heroicon-s-clipboard-document-list', 'label' => 'Registros Nuevos', 'value' => '47', 'color' => 'text-indigo-300'],
+                    ['icon' => 'heroicon-s-home', 'label' => 'Unidades Productivas', 'value' => $totalCampos, 'color' => 'text-green-300'],
+                    ['icon' => 'heroicon-s-cube', 'label' => 'Total de Animales', 'value' => $totalStock, 'color' => 'text-blue-300'],
+                    ['icon' => 'heroicon-s-chart-bar', 'label' => 'Ovinos', 'value' => $totalOvinos ?? 0, 'color' => 'text-green-300'],
+                    ['icon' => 'heroicon-s-clipboard-document-list', 'label' => 'Registros Recientes (7d)', 'value' => $registrosRecientes, 'color' => 'text-indigo-300'],
                 ];
             @endphp
             @foreach (array_merge($stats, $stats) as $stat) {{-- Duplicate for seamless loop --}}

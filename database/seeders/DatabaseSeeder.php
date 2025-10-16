@@ -37,15 +37,16 @@ class DatabaseSeeder extends Seeder
 
         // 3. Entidades que dependen de los catálogos y usuarios
         $this->call([
-            ProductorSeederMejorado::class, // Depende de User - 10 productores
+            ProductoresMasivosSeeder::class, // 25 productores con datos realistas
             InstitucionSeederMejorado::class, // 10 instituciones
-            UsuarioInstitucionalSeeder::class, // Usuarios institucionales para cada institución
-            UnidadProductivaSeederMejorado::class, // Depende de Productor - 2-3 por productor
+            UsuarioInstitucionalSeeder::class, // Usuarios institucionales (admins)
+            ParticipantesInstitucionalesSeeder::class, // 3-8 participantes por institución
+            UnidadesProductivasMasivasSeeder::class, // 2-4 UPs por productor
         ]);
 
         // 4. Stock (depende de todo lo anterior)
         $this->call([
-            StockAnimalSeederMejorado::class, // Stock real con declaraciones
+            StockAnimalHistoricoSeeder::class, // Movimientos históricos de 12 meses
         ]);
 
         // 5. Datos adicionales

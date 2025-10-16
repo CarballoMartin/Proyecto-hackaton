@@ -2,7 +2,7 @@
 <section class="relative bg-gray-900 text-white">
     <!-- Imagen de Fondo con Overlay Oscuro -->
     <div class="absolute inset-0">
-        <img src="{{ asset('imagenes-campos/pastos.jpeg') }}" alt="Paisaje de la cuenca ovino-caprina" class="w-full h-full
+        <img src="{{ asset('imagenes-campos/pastos.jpeg') }}" alt="Paisaje ganadero" class="w-full h-full
       object-cover">
         <div class="absolute inset-0 bg-black opacity-50"></div>
     </div>
@@ -11,7 +11,7 @@
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 text-center">
         <h1 class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl">
             <span class="block">Gestión Inteligente para la</span>
-            <span class="block text-indigo-400">Cuenca Ovino-Caprina</span>
+            <span class="block text-indigo-400">Gestión Ganadera</span>
         </h1>
         <p class="mt-6 max-w-3xl mx-auto text-lg text-gray-300">
             La plataforma digital que conecta a productores, técnicos e instituciones para un futuro más productivo y
@@ -64,7 +64,7 @@
                                                 <x-heroicon-o-globe-alt class="h-12 w-12 text-indigo-300" />
                     </div>
                     <h3 class="text-xl font-bold text-white">Plataforma Colaborativa</h3>
-                    <p class="mt-2 text-gray-300">Conectando la cuenca.</p>
+                    <p class="mt-2 text-gray-300">Conectando productores.</p>
                     <p class="mt-4 text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         Un ecosistema digital seguro que centraliza la información y fomenta la colaboración para el
                         desarrollo

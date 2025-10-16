@@ -16,17 +16,37 @@ class CheckUserRole
      */
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
+        // Excluir rutas que no necesitan verificación de rol
+        $excludedRoutes = ['logout', 'login', 'register', 'password.reset', 'password.confirm'];
+        
+        foreach ($excludedRoutes as $route) {
+            if ($request->routeIs($route)) {
+                return $next($request);
+            }
+        }
+
         if (!Auth::check()) {
             // Si no está autenticado, redirige al login
-            return redirect('login');
+            return redirect()->route('login');
         }
 
         // Obtiene el usuario autenticado
         $user = Auth::user();
 
+        // Verificar que el usuario tenga un rol válido
+        if (!$user->rol) {
+            Auth::logout();
+            return redirect()->route('login')->withErrors([
+                'email' => 'Usuario sin rol asignado. Contactá a un administrador.'
+            ]);
+        }
+
         // Comprueba si el rol del usuario está en la lista de roles permitidos
         if (!in_array($user->rol, $roles)) {
-            abort(403, 'Acceso no autorizado.');
+            Auth::logout();
+            return redirect()->route('login')->withErrors([
+                'email' => 'No tienes permisos para acceder a esta sección.'
+            ]);
         }
         
         return $next($request);
