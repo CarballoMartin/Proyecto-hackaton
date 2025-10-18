@@ -98,8 +98,8 @@
 
         {{-- Side Column --}}
         <div class="space-y-8">
-            {{-- Weather Widget --}}
-            <x-widgets.weather-widget :initial-data="$weatherData[0] ?? null" endpoint="/api/productor/clima" />
+            {{-- Widget de Clima --}}
+            @livewire('productor.clima-widget')
 
             {{-- External News --}}
             <div class="bg-white p-6 rounded-lg shadow">

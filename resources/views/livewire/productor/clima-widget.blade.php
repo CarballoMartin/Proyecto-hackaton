@@ -19,9 +19,15 @@
                     <div class="text-5xl font-bold text-gray-900">
                         {{ number_format($datosClima->temperatura_actual, 1) }}°C
                     </div>
-                    <div class="text-sm text-gray-600 mt-1">
+                    <div class="text-sm font-medium text-gray-700 mt-1">
+                        {{ $datosClima->obtenerDescripcionClima() }}
+                    </div>
+                    <div class="text-xs text-gray-500 mt-1">
                         @if($unidadSeleccionada)
-                            {{ $unidadSeleccionada->nombre }}
+                            📍 {{ $unidadSeleccionada->nombre }}
+                            @if($unidadSeleccionada->localidad)
+                                - {{ $unidadSeleccionada->localidad }}
+                            @endif
                         @endif
                     </div>
                 </div>

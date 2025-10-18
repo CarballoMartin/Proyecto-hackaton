@@ -67,4 +67,36 @@ class DatoClimaticoCache extends Model
             default => '🌡️', // Desconocido
         };
     }
+
+    /**
+     * Obtiene la descripción del clima en español según el código
+     */
+    public function obtenerDescripcionClima(): string
+    {
+        // Weather codes de Open-Meteo traducidos al español
+        return match(true) {
+            $this->codigo_clima === 0 => 'Despejado',
+            $this->codigo_clima === 1 => 'Mayormente despejado',
+            $this->codigo_clima === 2 => 'Parcialmente nublado',
+            $this->codigo_clima === 3 => 'Nublado',
+            $this->codigo_clima === 45 => 'Neblina',
+            $this->codigo_clima === 48 => 'Niebla',
+            $this->codigo_clima === 51 => 'Llovizna ligera',
+            $this->codigo_clima === 53 => 'Llovizna moderada',
+            $this->codigo_clima === 55 => 'Llovizna intensa',
+            $this->codigo_clima === 61 => 'Lluvia ligera',
+            $this->codigo_clima === 63 => 'Lluvia moderada',
+            $this->codigo_clima === 65 => 'Lluvia intensa',
+            $this->codigo_clima === 71 => 'Nieve ligera',
+            $this->codigo_clima === 73 => 'Nieve moderada',
+            $this->codigo_clima === 75 => 'Nieve intensa',
+            $this->codigo_clima === 80 => 'Chubascos ligeros',
+            $this->codigo_clima === 81 => 'Chubascos moderados',
+            $this->codigo_clima === 82 => 'Chubascos intensos',
+            $this->codigo_clima === 95 => 'Tormenta',
+            $this->codigo_clima === 96 => 'Tormenta con granizo ligero',
+            $this->codigo_clima === 99 => 'Tormenta con granizo intenso',
+            default => 'Clima desconocido',
+        };
+    }
 }
