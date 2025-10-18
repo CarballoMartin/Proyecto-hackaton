@@ -126,4 +126,28 @@ class UnidadProductiva extends Model
     {
         return $this->hasOne(DatoClimaticoCache::class)->latestOfMany('fecha_consulta');
     }
+
+    /**
+     * Relación con alertas ambientales
+     */
+    public function alertasAmbientales()
+    {
+        return $this->hasMany(AlertaAmbiental::class);
+    }
+
+    /**
+     * Alertas activas
+     */
+    public function alertasActivas()
+    {
+        return $this->hasMany(AlertaAmbiental::class)->activas();
+    }
+
+    /**
+     * Alertas no leídas
+     */
+    public function alertasNoLeidas()
+    {
+        return $this->hasMany(AlertaAmbiental::class)->activas()->noLeidas();
+    }
 }
