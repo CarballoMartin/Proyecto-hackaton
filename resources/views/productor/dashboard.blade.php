@@ -101,6 +101,9 @@
             {{-- Widget de Clima --}}
             @livewire('productor.clima-widget')
 
+            {{-- Panel de Alertas Ambientales (NUEVO) --}}
+            @livewire('productor.alertas-panel')
+
             {{-- External News --}}
             <div class="bg-white p-6 rounded-lg shadow">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">Noticias del Sector</h3>
