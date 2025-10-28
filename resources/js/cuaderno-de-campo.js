@@ -52,6 +52,20 @@ document.addEventListener('alpine:init', () => {
         dayFilter: 'todos',
         dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
         
+        init() {
+            // Convert array to object for easier access
+            if (Array.isArray(this.stockActualPorUP)) {
+                const stockByUp = {};
+                this.stockActualPorUP.forEach(stock => {
+                    if (!stockByUp[stock.unidad_productiva_id]) {
+                        stockByUp[stock.unidad_productiva_id] = [];
+                    }
+                    stockByUp[stock.unidad_productiva_id].push(stock);
+                });
+                this.stockActualPorUP = stockByUp;
+            }
+        },
+        
         // --- MODAL FORM STATE ---
         form: {
             especie_id: '',

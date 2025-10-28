@@ -53,7 +53,7 @@
                         <p class="text-gray-600 text-sm">Consejos sobre manejo, sanidad y normativas vigentes.</p>
                     </div>
                     <div class="mt-4 text-center">
-                        <button class="w-full px-4 py-1 bg-gray-200 border-2 border-gray-500 hover:bg-gray-300 font-semibold">Explorar Guías</button>
+                        <button onclick="alert('Esta funcionalidad estará disponible próximamente')" class="w-full px-4 py-1 bg-gray-200 border-2 border-gray-500 hover:bg-gray-300 font-semibold">Explorar Guías</button>
                     </div>
                 </fieldset>
             </div>
@@ -67,7 +67,7 @@
                         <p class="text-gray-600 text-sm">Enlaces de interés, contactos y más información útil.</p>
                     </div>
                     <div class="mt-4 text-center">
-                        <button class="w-full px-4 py-1 bg-gray-200 border-2 border-gray-500 hover:bg-gray-300 font-semibold">Ver Recursos</button>
+                        <button onclick="alert('Esta funcionalidad estará disponible próximamente')" class="w-full px-4 py-1 bg-gray-200 border-2 border-gray-500 hover:bg-gray-300 font-semibold">Ver Recursos</button>
                     </div>
                 </fieldset>
             </div>

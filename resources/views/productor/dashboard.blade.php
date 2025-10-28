@@ -21,12 +21,24 @@
                     ->where('created_at', '>=', now()->subDays(7))
                     ->count() : 0;
                 
+                // Crear array de estadísticas dinámicas
                 $stats = [
                     ['icon' => 'heroicon-s-home', 'label' => 'Unidades Productivas', 'value' => $totalCampos, 'color' => 'text-green-300'],
                     ['icon' => 'heroicon-s-cube', 'label' => 'Total de Animales', 'value' => $totalStock, 'color' => 'text-blue-300'],
-                    ['icon' => 'heroicon-s-chart-bar', 'label' => 'Ovinos', 'value' => $totalOvinos ?? 0, 'color' => 'text-green-300'],
                     ['icon' => 'heroicon-s-clipboard-document-list', 'label' => 'Registros Recientes (7d)', 'value' => $registrosRecientes, 'color' => 'text-indigo-300'],
                 ];
+                
+                // Agregar estadísticas por especie dinámicamente
+                if (isset($stockPorEspecie) && $stockPorEspecie->isNotEmpty()) {
+                    foreach ($stockPorEspecie as $especie => $cantidad) {
+                        $stats[] = [
+                            'icon' => 'heroicon-s-chart-bar', 
+                            'label' => $especie, 
+                            'value' => $cantidad, 
+                            'color' => 'text-green-300'
+                        ];
+                    }
+                }
             @endphp
             @foreach (array_merge($stats, $stats) as $stat) {{-- Duplicate for seamless loop --}}
                 <div class="flex-shrink-0 flex items-center space-x-4">
@@ -46,19 +58,24 @@
             {{-- Evolution Graphs --}}
             <div class="bg-white p-6 rounded-lg shadow">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">Evolución del Stock</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="border rounded-lg p-4">
-                        <p class="text-sm text-gray-600">Ovinos: Últimos 6 meses</p>
-                        <div class="mt-4 h-48">
-                            <canvas id="ovinosChart"></canvas>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="evolucionCharts">
+                    @if(isset($datosHistoricos['datosPorEspecie']))
+                        @foreach($datosHistoricos['datosPorEspecie'] as $especie => $datos)
+                            @php
+                                $chartId = strtolower(str_replace(' ', '_', $especie)) . '_chart';
+                            @endphp
+                            <div class="border rounded-lg p-4">
+                                <p class="text-sm text-gray-600">{{ $especie }}: Últimos 6 meses</p>
+                                <div class="mt-4 h-48">
+                                    <canvas id="{{ $chartId }}"></canvas>
+                                </div>
+                            </div>
+                        @endforeach
+                    @else
+                        <div class="col-span-2 text-center text-gray-500">
+                            No hay datos históricos disponibles
                         </div>
-                    </div>
-                    <div class="border rounded-lg p-4">
-                        <p class="text-sm text-gray-600">Caprinos: Últimos 6 meses</p>
-                        <div class="mt-4 h-48">
-                            <canvas id="caprinosChart"></canvas>
-                        </div>
-                    </div>
+                    @endif
                 </div>
             </div>
 
@@ -125,65 +142,63 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Gráfico de Ovinos
-            const ovinosCtx = document.getElementById('ovinosChart').getContext('2d');
-            new Chart(ovinosCtx, {
-                type: 'line',
-                data: {
-                    labels: @js($datosHistoricos['meses'] ?? ['Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']),
-                    datasets: [{
-                        label: 'Ovinos',
-                        data: @js($datosHistoricos['ovinos'] ?? [0, 0, 0, 0, 0, 0]),
-                        borderColor: 'rgba(34, 197, 94, 1)',
-                        backgroundColor: 'rgba(34, 197, 94, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
+            @php
+                $datosEspecies = $datosHistoricos['datosPorEspecie'] ?? [];
+                $mesesData = $datosHistoricos['meses'] ?? ['Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+            @endphp
+            const datosHistoricos = @json($datosEspecies);
+            const meses = @json($mesesData);
+            
+            
+            // Colores para cada especie
+            const colores = [
+                'rgba(34, 197, 94, 1)',   // green
+                'rgba(59, 130, 246, 1)',  // blue
+                'rgba(168, 85, 247, 1)',  // purple
+                'rgba(236, 72, 153, 1)',  // pink
+                'rgba(251, 146, 60, 1)',  // orange
+            ];
+            
+            // Crear gráficos dinámicamente
+            let colorIndex = 0;
+            Object.keys(datosHistoricos).forEach(function(especie) {
+                const canvasId = especie.toLowerCase().replace(/\s+/g, '_') + '_chart';
+                const canvas = document.getElementById(canvasId);
+                
+                if (canvas) {
+                    const ctx = canvas.getContext('2d');
+                    const color = colores[colorIndex % colores.length];
+                    
+                    new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: meses,
+                            datasets: [{
+                                label: especie,
+                                data: datosHistoricos[especie],
+                                borderColor: color,
+                                backgroundColor: color.replace('1)', '0.1)'),
+                                tension: 0.4,
+                                fill: true
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
                         }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-
-            // Gráfico de Caprinos
-            const caprinosCtx = document.getElementById('caprinosChart').getContext('2d');
-            new Chart(caprinosCtx, {
-                type: 'line',
-                data: {
-                    labels: @js($datosHistoricos['meses'] ?? ['Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']),
-                    datasets: [{
-                        label: 'Caprinos',
-                        data: @js($datosHistoricos['caprinos'] ?? [0, 0, 0, 0, 0, 0]),
-                        borderColor: 'rgba(59, 130, 246, 1)',
-                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
+                    });
+                    
+                    colorIndex++;
                 }
             });
         });

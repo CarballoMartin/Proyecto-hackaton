@@ -150,4 +150,14 @@ class UnidadProductiva extends Model
     {
         return $this->hasMany(AlertaAmbiental::class)->activas()->noLeidas();
     }
+
+    public function datosSatelitales()
+    {
+        return $this->hasMany(DatoSatelital::class);
+    }
+
+    public function ultimoDatoSatelital()
+    {
+        return $this->hasOne(DatoSatelital::class)->latest('fecha_imagen');
+    }
 }

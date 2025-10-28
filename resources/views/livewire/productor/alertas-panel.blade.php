@@ -1,3 +1,4 @@
+<div>
 @if($alertasActivas->count() > 0)
     <div class="bg-white rounded-lg shadow p-6">
         {{-- Header --}}
@@ -111,3 +112,4 @@
         @endif
     </div>
 @endif
+</div>

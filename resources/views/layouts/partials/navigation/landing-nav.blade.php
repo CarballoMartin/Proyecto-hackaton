@@ -4,7 +4,7 @@
             <div class="flex items-center space-x-4">
                 <a href="{{ url('/') }}" class="flex items-center space-x-2 p-2 rounded-lg shadow-md">
                     <x-logo class="h-10 w-10" />
-                    <span class="font-bold text-xl text-gray-700">Sistema de Gestión Ganadera</span>
+                    <span class="font-bold text-xl text-gray-700">Campo Verde</span>
                 </a>
             </div>
 

@@ -25,7 +25,7 @@ class CreateUnidadProductiva
     {
         // Si no se provee un tipo de identificador, usar el de la configuración por defecto.
         if (!isset($data['tipo_identificador_id'])) {
-            $defaultCode = config('ovino.default_identifier_code', 'RNSPA');
+            $defaultCode = config('ganaderia.default_identifier_code', 'RNSPA');
             $data['tipo_identificador_id'] = TipoIdentificador::where('nombre', $defaultCode)->value('id');
         }
 

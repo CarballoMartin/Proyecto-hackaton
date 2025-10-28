@@ -69,4 +69,9 @@ class Productor extends Model
     {
         return $this->hasMany(DeclaracionStock::class);
     }
+
+    public function configuracionAlertas()
+    {
+        return $this->hasOne(ConfiguracionAlerta::class);
+    }
 }

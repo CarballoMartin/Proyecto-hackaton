@@ -18,18 +18,22 @@ class Dashboard extends Component
         
         // Estadísticas básicas
         $totalCampos = 0;
-        $totalOvinos = 0;
-        $totalCaprinos = 0;
+        $stockPorEspecie = collect();
         $ultimaActualizacion = null;
         
         if ($productor) {
             $totalCampos = $productor->unidadesProductivas->count();
             
-            // Obtener stock animal por especie
+            // Obtener stock animal por especie dinámicamente
             $unidadesProductivasIds = $productor->unidadesProductivas->pluck('id');
-            $stockAnimal = StockAnimal::whereIn('unidad_productiva_id', $unidadesProductivasIds)->get();
-            $totalOvinos = $stockAnimal->where('especie_id', 1)->sum('cantidad'); // Asumiendo que 1 es ovino
-            $totalCaprinos = $stockAnimal->where('especie_id', 2)->sum('cantidad'); // Asumiendo que 2 es caprino
+            $stockAnimal = StockAnimal::whereIn('unidad_productiva_id', $unidadesProductivasIds)
+                ->with('especie')
+                ->get();
+            
+            // Agrupar por especie dinámicamente
+            $stockPorEspecie = $stockAnimal->groupBy('especie.nombre')->map(function ($animales) {
+                return $animales->sum('cantidad');
+            });
             
             $ultimaActualizacion = $productor->updated_at;
         }
@@ -37,8 +41,7 @@ class Dashboard extends Component
         return view('livewire.productor.dashboard', [
             'productor' => $productor,
             'totalCampos' => $totalCampos,
-            'totalOvinos' => $totalOvinos,
-            'totalCaprinos' => $totalCaprinos,
+            'stockPorEspecie' => $stockPorEspecie,
             'ultimaActualizacion' => $ultimaActualizacion,
         ]);
     }

@@ -85,7 +85,7 @@
                         <div>
                             <div class="flex justify-between items-center mb-2">
                                 <h4 class="text-lg font-semibold text-gray-700 border-b pb-2 flex-grow">Ubicación</h4>
-                                <a href="{{ route('productor.chacras.mapa', ['id' => $up->id]) }}"
+                                <a href="{{ route('productor.unidades-productivas.mapa', ['id' => $up->id]) }}"
                                     class="text-sm text-indigo-600 hover:text-indigo-800 font-semibold">Pantalla completa</a>
                             </div>
                             <div class="p-2 bg-gray-50 rounded-lg mt-2">

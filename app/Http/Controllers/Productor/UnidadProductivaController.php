@@ -22,7 +22,7 @@ class UnidadProductivaController extends Controller
     {
         $formData = $request->session()->get('form_data', []);
 
-        $defaultCode = config('ovino.default_identifier_code', 'RNSPA');
+        $defaultCode = config('ganaderia.default_identifier_code', 'RNSPA');
         $defaultIdentificador = TipoIdentificador::where('nombre', $defaultCode)->first();
 
         return view('productor.unidades-productivas.create.step-1', [
@@ -46,7 +46,7 @@ class UnidadProductivaController extends Controller
         ]);
 
         $validatedData['habita'] = $request->has('habita');
-        $validatedData['tipo_identificador_id'] = TipoIdentificador::where('nombre', config('ovino.default_identifier_code', 'RNSPA'))->first()->id;
+                    $validatedData['tipo_identificador_id'] = TipoIdentificador::where('nombre', config('ganaderia.default_identifier_code', 'RNSPA'))->first()->id;
 
         $request->session()->put('form_data', $validatedData);
 

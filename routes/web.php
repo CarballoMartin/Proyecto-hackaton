@@ -112,7 +112,6 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         Route::get('/solicitudes', \App\Livewire\Institucional\Solicitudes::class)->name('solicitudes.index');
         Route::get('/reportes', \App\Livewire\Institucional\Reportes::class)->name('reportes.index');
         Route::get('/mapa', \App\Livewire\Institucional\Mapa::class)->name('mapa.index');
-        Route::get('/configuracion', \App\Livewire\Institucional\Configuracion::class)->name('configuracion.index');
     });
 
 Route::get('/panel-maqueta', [DashboardController::class, 'panelMaqueta'])->name('panel.maqueta');
@@ -134,6 +133,12 @@ Route::middleware(['role:productor', 'productor.setup'])->group(function () {
 
     Route::get('/productor/panel', [\App\Http\Controllers\Productor\ProductorController::class, 'dashboard'])->name('productor.panel');
 
+    // Rutas para Monitoreo Ambiental
+    Route::get('/productor/ambiental', \App\Livewire\Productor\Ambiental\General::class)->name('productor.ambiental');
+    Route::get('/productor/ambiental/ndvi', \App\Livewire\Productor\Ambiental\Ndvi::class)->name('productor.ambiental.ndvi');
+    Route::get('/productor/ambiental/suelo', \App\Livewire\Productor\Ambiental\Suelo::class)->name('productor.ambiental.suelo');
+    Route::get('/productor/ambiental/dashboard', \App\Livewire\Productor\Ambiental\DashboardIntegrado::class)->name('productor.ambiental.dashboard');
+    
     // Rutas para el perfil del productor (modal)
     Route::get('/productor/perfil', [\App\Http\Controllers\Productor\ProductorProfileController::class, 'show'])->name('productor.perfil.show');
     Route::post('/productor/perfil', [\App\Http\Controllers\Productor\ProductorProfileController::class, 'update'])->name('productor.perfil.update');
@@ -154,7 +159,7 @@ Route::middleware(['role:productor', 'productor.setup'])->group(function () {
     Route::get('/productor/estadisticas', [\App\Http\Controllers\Productor\ProductorController::class, 'estadisticas'])->name('productor.estadisticas.index');
 
     Route::get('/productor/reportes', [\App\Http\Controllers\Productor\ProductorController::class, 'reportes'])->name('productor.reportes.index');
-    Route::get('/productor/chacras/{id}/mapa', \App\Livewire\Productor\UnidadesProductivas\MapaChacra::class)->name('productor.chacras.mapa');
+    Route::get('/productor/unidades-productivas/{id}/mapa', \App\Livewire\Productor\UnidadesProductivas\MapaChacra::class)->name('productor.unidades-productivas.mapa');
     
     // Rutas para Cuaderno de Campo
     Route::prefix('productor/cuaderno')->name('cuaderno.')->group(function () {

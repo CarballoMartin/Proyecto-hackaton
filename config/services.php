@@ -39,4 +39,9 @@ return [
         'key' => env('OPENWEATHER_API_KEY'),
     ],
 
+    'sentinel_hub' => [
+        'client_id' => env('SENTINEL_HUB_CLIENT_ID'),
+        'client_secret' => env('SENTINEL_HUB_CLIENT_SECRET'),
+    ],
+
 ];

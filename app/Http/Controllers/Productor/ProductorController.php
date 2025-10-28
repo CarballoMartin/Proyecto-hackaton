@@ -34,25 +34,22 @@ class ProductorController extends Controller
         
         // Estadísticas básicas
         $totalCampos = 0;
-        $totalOvinos = 0;
-        $totalCaprinos = 0;
+        $stockPorEspecie = collect();
         $ultimaActualizacion = null;
         
         if ($productor) {
             $totalCampos = $productor->unidadesProductivas->count();
             
-            // Obtener stock animal por especie
+            // Obtener stock animal por especie dinámicamente
             $unidadesProductivasIds = $productor->unidadesProductivas->pluck('id');
             $stockAnimal = StockAnimal::whereIn('unidad_productiva_id', $unidadesProductivasIds)
                 ->with('especie')
                 ->get();
             
-            // Obtener IDs de especies dinámicamente
-            $especieOvino = \App\Models\Especie::where('nombre', 'Ovino')->first();
-            $especieCaprino = \App\Models\Especie::where('nombre', 'Caprino')->first();
-            
-            $totalOvinos = $especieOvino ? $stockAnimal->where('especie_id', $especieOvino->id)->sum('cantidad') : 0;
-            $totalCaprinos = $especieCaprino ? $stockAnimal->where('especie_id', $especieCaprino->id)->sum('cantidad') : 0;
+            // Agrupar por especie dinámicamente
+            $stockPorEspecie = $stockAnimal->groupBy('especie.nombre')->map(function ($animales) {
+                return $animales->sum('cantidad');
+            });
             
             $ultimaActualizacion = $productor->updated_at;
             
@@ -84,8 +81,7 @@ class ProductorController extends Controller
         return view('productor.dashboard', [
             'productor' => $productor,
             'totalCampos' => $totalCampos,
-            'totalOvinos' => $totalOvinos,
-            'totalCaprinos' => $totalCaprinos,
+            'stockPorEspecie' => $stockPorEspecie ?? collect(),
             'ultimaActualizacion' => $ultimaActualizacion,
             'weatherData' => $weatherData,
             'datosHistoricos' => $datosHistoricos ?? [],
@@ -170,8 +166,6 @@ class ProductorController extends Controller
         // --- Calcular KPIs ---
         $totalAnimales = $resumenPorUnidad->sum('total_animales');
         $totalSuperficie = $resumenPorUnidad->sum('superficie');
-        $totalOvinos = $composicionEspecie['Ovino'] ?? 0;
-        $totalCaprinos = $composicionEspecie['Caprino'] ?? 0;
         $cargaAnimal = $totalSuperficie > 0 ? number_format($totalAnimales / $totalSuperficie, 2) : 0;
 
         // --- Construir Gráficos (CORREGIDO) ---
@@ -198,8 +192,7 @@ class ProductorController extends Controller
             
             // KPIs
             'totalAnimales' => $totalAnimales,
-            'totalOvinos' => $totalOvinos,
-            'totalCaprinos' => $totalCaprinos,
+            'composicionEspecie' => $composicionEspecie,
             'cargaAnimal' => $cargaAnimal,
             
             // Datos para la tabla
@@ -223,44 +216,36 @@ class ProductorController extends Controller
      */
     private function obtenerDatosHistoricos($unidadesProductivasIds, $fechaInicio)
     {
+        // Obtener todas las especies dinámicamente
+        $especies = \App\Models\Especie::all();
+        
         // Obtener datos mensuales de los últimos 6 meses
         $meses = [];
-        $datosOvinos = [];
-        $datosCaprinos = [];
+        $datosPorEspecie = [];
+        
+        // Inicializar arrays para cada especie
+        foreach ($especies as $especie) {
+            $datosPorEspecie[$especie->nombre] = [];
+        }
         
         for ($i = 5; $i >= 0; $i--) {
             $fecha = now()->subMonths($i);
             $meses[] = $fecha->format('M');
             
             // Obtener stock por especie para este mes
-            $especieOvino = \App\Models\Especie::where('nombre', 'Ovino')->first();
-            $especieCaprino = \App\Models\Especie::where('nombre', 'Caprino')->first();
-            
-            $ovinos = 0;
-            $caprinos = 0;
-            
-            if ($especieOvino) {
-                $ovinos = StockAnimal::whereIn('unidad_productiva_id', $unidadesProductivasIds)
-                    ->where('especie_id', $especieOvino->id)
+            foreach ($especies as $especie) {
+                $cantidad = StockAnimal::whereIn('unidad_productiva_id', $unidadesProductivasIds)
+                    ->where('especie_id', $especie->id)
                     ->where('fecha_registro', '<=', $fecha->endOfMonth())
                     ->sum('cantidad');
+                
+                $datosPorEspecie[$especie->nombre][] = $cantidad;
             }
-            
-            if ($especieCaprino) {
-                $caprinos = StockAnimal::whereIn('unidad_productiva_id', $unidadesProductivasIds)
-                    ->where('especie_id', $especieCaprino->id)
-                    ->where('fecha_registro', '<=', $fecha->endOfMonth())
-                    ->sum('cantidad');
-            }
-            
-            $datosOvinos[] = $ovinos;
-            $datosCaprinos[] = $caprinos;
         }
         
         return [
             'meses' => $meses,
-            'ovinos' => $datosOvinos,
-            'caprinos' => $datosCaprinos
+            'datosPorEspecie' => $datosPorEspecie
         ];
     }
 }

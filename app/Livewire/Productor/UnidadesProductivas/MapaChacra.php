@@ -16,7 +16,7 @@ class MapaChacra extends Component
     public function mount($id)
     {
         $this->up = UnidadProductiva::findOrFail($id);
-        $this->backUrl = route('productor.chacras.gestionar', ['id' => $id]);
+        $this->backUrl = route('productor.unidades-productivas.gestionar', ['id' => $id]);
 
         $productor = $this->up->productores->first();
         if ($productor) {

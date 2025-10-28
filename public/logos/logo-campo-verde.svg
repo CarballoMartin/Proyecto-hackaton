@@ -1,0 +1,49 @@
+<svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fondo del logo -->
+  <rect width="200" height="60" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1" rx="8"/>
+  
+  <!-- Icono de campo/agricultura -->
+  <g transform="translate(10, 10)">
+    <!-- Montañas/siluetas -->
+    <path d="M0,30 L8,20 L16,25 L24,15 L32,30 L40,10 L48,30" fill="#16a34a" opacity="0.3"/>
+    
+    <!-- Campo/pasto -->
+    <rect x="0" y="30" width="40" height="20" fill="#22c55e"/>
+    
+    <!-- Líneas de pasto -->
+    <g stroke="#15803d" stroke-width="1" fill="none">
+      <path d="M5,35 L5,45 M8,32 L8,48 M11,38 L11,42 M14,30 L14,50 M17,35 L17,45 M20,32 L20,48 M23,38 L23,42 M26,30 L26,50 M29,35 L29,45 M32,32 L32,48 M35,38 L35,42 M38,30 M38,50"/>
+    </g>
+    
+    <!-- Sol -->
+    <circle cx="35" cy="15" r="6" fill="#fbbf24"/>
+    <g stroke="#f59e0b" stroke-width="1" fill="none">
+      <line x1="35" y1="5" x2="35" y2="9"/>
+      <line x1="35" y1="21" x2="35" y2="25"/>
+      <line x1="25" y1="15" x2="29" y2="15"/>
+      <line x1="41" y1="15" x2="45" y2="15"/>
+      <line x1="28" y1="8" x2="30" y2="10"/>
+      <line x1="40" y1="8" x2="42" y2="10"/>
+      <line x1="28" y1="22" x2="30" y2="20"/>
+      <line x1="40" y1="22" x2="42" y2="20"/>
+    </g>
+  </g>
+  
+  <!-- Texto del logo -->
+  <g transform="translate(60, 15)">
+    <!-- "Campo" -->
+    <text x="0" y="20" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#16a34a">
+      Campo
+    </text>
+    
+    <!-- "Verde" -->
+    <text x="0" y="40" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#22c55e">
+      Verde
+    </text>
+  </g>
+  
+  <!-- Subtítulo -->
+  <text x="60" y="50" font-family="Arial, sans-serif" font-size="8" fill="#64748b">
+    Sistema de Gestión Ganadera
+  </text>
+</svg>

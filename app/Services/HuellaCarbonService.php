@@ -8,41 +8,25 @@ use Illuminate\Support\Facades\DB;
 class HuellaCarbonService
 {
     /**
-     * Factores de emisión de metano por tipo de animal (kg CH4/animal/año)
-     * Basado en datos del IPCC y estudios latinoamericanos
+     * Obtiene los factores de emisión desde la configuración
      */
-    const FACTORES_EMISION = [
-        'Ovino' => [
-            'ch4_animal_anio' => 8.0,  // kg CH4 por ovino por año
-            'co2_equivalente' => 28,    // Factor de conversión CH4 a CO2eq
-            'descripcion' => 'Ovino adulto promedio'
-        ],
-        'Caprino' => [
-            'ch4_animal_anio' => 5.0,  // kg CH4 por caprino por año
-            'co2_equivalente' => 28,
-            'descripcion' => 'Caprino adulto promedio'
-        ],
-        'Bovino' => [
-            'ch4_animal_anio' => 57.0, // kg CH4 por bovino por año
-            'co2_equivalente' => 28,
-            'descripcion' => 'Bovino adulto promedio'
-        ],
-        'Equino' => [
-            'ch4_animal_anio' => 18.0, // kg CH4 por equino por año
-            'co2_equivalente' => 28,
-            'descripcion' => 'Equino adulto promedio'
-        ],
-    ];
+    private function getFactoresEmision(): array
+    {
+        return config('ganaderia.factores_emision', []);
+    }
 
     /**
-     * Benchmarks internacionales (kg CO2eq/animal/año)
+     * Obtiene los benchmarks desde la configuración
      */
-    const BENCHMARKS = [
-        'excelente' => 150,  // Sistemas muy eficientes
-        'bueno' => 250,      // Sistemas buenos
-        'promedio' => 350,   // Promedio nacional
-        'mejorable' => 500,  // Requiere mejoras
-    ];
+    private function getBenchmarks(): array
+    {
+        return config('ganaderia.benchmarks_ambientales', [
+            'excelente' => 150,
+            'bueno' => 250,
+            'promedio' => 350,
+            'mejorable' => 500,
+        ]);
+    }
 
     /**
      * Calcula la huella de carbono total del productor
@@ -56,10 +40,10 @@ class HuellaCarbonService
         }
 
         // Obtener stock actual por especie
-        $stockPorEspecie = DB::table('stock_actual')
-            ->join('especies', 'stock_actual.especie_id', '=', 'especies.id')
-            ->whereIn('stock_actual.unidad_productiva_id', $unidades->pluck('id'))
-            ->select('especies.nombre as especie', DB::raw('SUM(stock_actual.cantidad_actual) as total'))
+        $stockPorEspecie = DB::table('stock_animals')
+            ->join('especies', 'stock_animals.especie_id', '=', 'especies.id')
+            ->whereIn('stock_animals.unidad_productiva_id', $unidades->pluck('id'))
+            ->select('especies.nombre as especie', DB::raw('SUM(stock_animals.cantidad) as total'))
             ->groupBy('especies.nombre')
             ->get();
 
@@ -72,8 +56,10 @@ class HuellaCarbonService
             $cantidad = $stock->total;
             $totalAnimales += $cantidad;
 
-            if (isset(self::FACTORES_EMISION[$especie])) {
-                $factor = self::FACTORES_EMISION[$especie];
+            $factoresEmision = $this->getFactoresEmision();
+            
+            if (isset($factoresEmision[$especie])) {
+                $factor = $factoresEmision[$especie];
                 
                 // Cálculo: kg CH4/año * factor CO2eq * número de animales
                 $ch4Anual = $factor['ch4_animal_anio'] * $cantidad;
@@ -146,21 +132,23 @@ class HuellaCarbonService
      */
     private function clasificarEmisiones(float $emisionesPorAnimal): array
     {
-        if ($emisionesPorAnimal <= self::BENCHMARKS['excelente']) {
+        $benchmarks = $this->getBenchmarks();
+        
+        if ($emisionesPorAnimal <= $benchmarks['excelente']) {
             return [
                 'nivel' => 'excelente',
                 'color' => 'green',
                 'icono' => '🌟',
                 'mensaje' => '¡Excelente! Emisiones muy por debajo del promedio'
             ];
-        } elseif ($emisionesPorAnimal <= self::BENCHMARKS['bueno']) {
+        } elseif ($emisionesPorAnimal <= $benchmarks['bueno']) {
             return [
                 'nivel' => 'bueno',
                 'color' => 'blue',
                 'icono' => '✓',
                 'mensaje' => 'Buen desempeño, por debajo del promedio nacional'
             ];
-        } elseif ($emisionesPorAnimal <= self::BENCHMARKS['promedio']) {
+        } elseif ($emisionesPorAnimal <= $benchmarks['promedio']) {
             return [
                 'nivel' => 'promedio',
                 'color' => 'yellow',
@@ -183,8 +171,9 @@ class HuellaCarbonService
     private function compararConBenchmark(float $emisionesPorAnimal): array
     {
         $diferencias = [];
+        $benchmarks = $this->getBenchmarks();
         
-        foreach (self::BENCHMARKS as $nivel => $valor) {
+        foreach ($benchmarks as $nivel => $valor) {
             $diferencia = $emisionesPorAnimal - $valor;
             $porcentaje = $valor > 0 ? round(($diferencia / $valor) * 100, 1) : 0;
             
@@ -207,7 +196,9 @@ class HuellaCarbonService
         $recomendaciones = [];
 
         // Recomendación según nivel de emisiones
-        if ($emisionesPorAnimal > self::BENCHMARKS['promedio']) {
+        $benchmarks = $this->getBenchmarks();
+        
+        if ($emisionesPorAnimal > $benchmarks['promedio']) {
             $recomendaciones[] = [
                 'titulo' => 'Mejora el manejo de pasturas',
                 'descripcion' => 'Implementa rotación de pasturas para mejorar la digestibilidad y reducir emisiones de metano',
@@ -304,6 +295,7 @@ class HuellaCarbonService
         ];
     }
 }
+
 
 
 

@@ -98,7 +98,7 @@
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                              <div class="flex space-x-2">
-                                                 <a href="{{ route('productor.chacras.gestionar', $unidadProductiva->id) }}" class="text-indigo-600 hover:text-indigo-900" title="Ver detalles">
+                                                 <a href="{{ route('productor.unidades-productivas.gestionar', $unidadProductiva->id) }}" class="text-indigo-600 hover:text-indigo-900" title="Ver detalles">
                                                      Ver
                                                  </a>
                                              </div>

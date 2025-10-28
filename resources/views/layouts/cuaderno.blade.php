@@ -32,7 +32,7 @@
                 <div class="px-4 sm:px-6 lg:px-8">
                     <div class="flex items-center justify-between h-16">
                         <div class="flex items-center">
-                            <img src="{{ asset('logos/logoovinos.png') }}" alt="Logo Ovinos" class="h-12 w-auto">
+                            <img src="{{ asset('logos/logo-campo-verde.svg') }}" alt="Campo Verde" class="h-12 w-auto">
                         </div>
                         <div class="flex items-center">
                             <p class="text-sm">Cierre de ciclo: <span class="font-bold text-orange-400">{{ $tiempoRestante ?? 'N/A' }}</span></p>

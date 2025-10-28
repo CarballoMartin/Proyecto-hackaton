@@ -25,14 +25,12 @@ class ClimaWidget extends Component
             return;
         }
 
-        // Obtener la primera unidad con datos de clima
-        $this->unidadSeleccionada = $productor->unidadesProductivas()
-            ->whereHas('datosClimaticos')
-            ->with('datosClimaticos')
-            ->first();
+        // Obtener la primera unidad productiva del productor
+        $this->unidadSeleccionada = $productor->unidadesProductivas()->first();
 
         if ($this->unidadSeleccionada) {
-            $this->datosClima = $this->unidadSeleccionada->datosClimaticos()
+            // Buscar datos climáticos para esta unidad
+            $this->datosClima = DatoClimaticoCache::where('unidad_productiva_id', $this->unidadSeleccionada->id)
                 ->latest('fecha_consulta')
                 ->first();
         }

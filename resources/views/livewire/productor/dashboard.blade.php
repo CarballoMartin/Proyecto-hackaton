@@ -19,7 +19,7 @@
 
     {{-- Estadísticas Principales --}}
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-{{ min(4, ($stockPorEspecie->count() ?? 0) + 1) }} gap-6 mb-8">
             {{-- Total de Campos --}}
             <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-green-500">
                 <div class="flex items-center">
@@ -37,39 +37,46 @@
                 </div>
             </div>
 
-            {{-- Total de Ovinos --}}
-            <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-blue-500">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                            </svg>
+            {{-- Stock por especie dinámicamente --}}
+            @if(isset($stockPorEspecie) && $stockPorEspecie->isNotEmpty())
+                @foreach($stockPorEspecie as $especie => $cantidad)
+                    @php
+                        $colorClasses = [
+                            'border-l-4 border-blue-500 bg-blue-100 text-blue-600',
+                            'border-l-4 border-purple-500 bg-purple-100 text-purple-600',
+                            'border-l-4 border-indigo-500 bg-indigo-100 text-indigo-600',
+                            'border-l-4 border-pink-500 bg-pink-100 text-pink-600',
+                        ];
+                        $colorClass = $colorClasses[$loop->index % count($colorClasses)];
+                        $borderColor = $loop->index === 0 ? 'border-blue-500' : ($loop->index === 1 ? 'border-purple-500' : ($loop->index === 2 ? 'border-indigo-500' : 'border-pink-500'));
+                        $bgColor = $loop->index === 0 ? 'bg-blue-100' : ($loop->index === 1 ? 'bg-purple-100' : ($loop->index === 2 ? 'bg-indigo-100' : 'bg-pink-100'));
+                        $textColor = $loop->index === 0 ? 'text-blue-600' : ($loop->index === 1 ? 'text-purple-600' : ($loop->index === 2 ? 'text-indigo-600' : 'text-pink-600'));
+                    @endphp
+                    <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 {{ $borderColor }}">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <div class="w-12 h-12 {{ $bgColor }} rounded-lg flex items-center justify-center">
+                                    <svg class="w-6 h-6 {{ $textColor }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-500">Total de {{ $especie }}</p>
+                                <p class="text-2xl font-bold text-gray-900">{{ $cantidad }}</p>
+                            </div>
                         </div>
                     </div>
-                    <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-500">Total de Ovinos</p>
-                        <p class="text-2xl font-bold text-gray-900">{{ $totalOvinos }}</p>
-                    </div>
-                </div>
-            </div>
-
-            {{-- Total de Caprinos --}}
-            <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-purple-500">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                            </svg>
+                @endforeach
+            @else
+                <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-gray-500">
+                    <div class="flex items-center">
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-500">No hay stock registrado</p>
                         </div>
                     </div>
-                    <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-500">Total de Caprinos</p>
-                        <p class="text-2xl font-bold text-gray-900">{{ $totalCaprinos }}</p>
-                    </div>
                 </div>
-            </div>
+            @endif
         </div>
 
         {{-- Grid: Clima + Acciones Rápidas --}}
