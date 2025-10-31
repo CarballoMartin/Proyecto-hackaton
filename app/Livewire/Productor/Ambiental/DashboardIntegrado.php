@@ -159,6 +159,6 @@ class DashboardIntegrado extends Component
 
     public function render()
     {
-        return view('livewire.productor.ambiental.dashboard-integrado');
+        return view('livewire.productor.ambiental.dashboard-integrado')->layout('layouts.productor');
     }
 }

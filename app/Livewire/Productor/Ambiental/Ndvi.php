@@ -189,6 +189,6 @@ class Ndvi extends Component
 
     public function render()
     {
-        return view('livewire.productor.ambiental.ndvi');
+        return view('livewire.productor.ambiental.ndvi')->layout('layouts.productor');
     }
 }
